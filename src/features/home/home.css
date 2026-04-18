@@ -126,4 +126,19 @@
   font-size: var(--font-caption);
   text-transform: uppercase;
   color: var(--color-muted);
+  margin-bottom: var(--space-md);
+}
+
+.home__template-btns {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.home__template-edit-btn {
+  margin-left: var(--space-sm);
+}
+
+.home__new-template-btn {
+  width: 100%;
+  margin-top: var(--space-md);
 }

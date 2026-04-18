@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="./src/features/active-workout/active-workout.css" />
   <link rel="stylesheet" href="./src/features/history/history.css" />
   <link rel="stylesheet" href="./src/features/exercise-picker/exercise-picker.css" />
+  <link rel="stylesheet" href="./src/features/stats/stats.css" />
+  <link rel="stylesheet" href="./src/features/exercises/exercises.css" />
+  <link rel="stylesheet" href="./src/features/template-editor/template-editor.css" />
   <style>
     #tabbar {
       position: fixed;
@@ -20,40 +23,42 @@
       left: 0;
       right: 0;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      width: 100%;
-      height: var(--touch-target);
+      grid-template-columns: 1fr 1fr 1fr 1fr;
       background: var(--color-bg);
       border-top: var(--border-width) solid var(--color-border);
-      font-family: var(--font-mono);
+      height: calc(56px + env(safe-area-inset-bottom));
       padding-bottom: env(safe-area-inset-bottom);
+      z-index: 100;
     }
 
     #tabbar .tab {
-      appearance: none;
-      border: none;
-      background: transparent;
-      color: var(--color-fg);
-      font-size: var(--font-caption);
-      font-weight: bold;
-      cursor: pointer;
-      text-transform: uppercase;
-      border-right: var(--border-width) solid var(--color-border);
+      height: 56px;
       font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: transparent;
+      border: none;
+      border-right: var(--border-width) solid var(--color-border);
+      cursor: pointer;
+      color: var(--color-muted);
+      -webkit-tap-highlight-color: transparent;
+      padding: 0 2px;
     }
 
     #tabbar .tab:last-child {
       border-right: none;
     }
 
-    #tabbar .tab[aria-current="page"] {
+    #tabbar .tab[aria-current="page"],
+    #tabbar .tab.tab--active {
       background: var(--color-fg);
       color: var(--color-bg);
     }
 
-    body {
-      padding-bottom: calc(var(--touch-target) + env(safe-area-inset-bottom));
+    #app {
+      padding-bottom: calc(56px + env(safe-area-inset-bottom));
     }
 
     #modal {
@@ -68,9 +73,11 @@
 </head>
 <body>
   <div id="app"></div>
-  <nav id="tabbar">
+  <nav id="tabbar" role="navigation" aria-label="Main navigation">
     <button class="tab" data-route="/" aria-current="page">HOME</button>
     <button class="tab" data-route="/history">HISTORY</button>
+    <button class="tab" data-route="/stats">STATS</button>
+    <button class="tab" data-route="/exercises">EXERCISES</button>
   </nav>
   <dialog id="modal" aria-modal="true" aria-label="Exercise Picker"></dialog>
   <script type="module" src="./src/main.js"></script>

@@ -3,6 +3,7 @@ import { formatCurrentDate, formatDuration } from '../../core/format.js';
 import { renderButton } from '../../components/button.js';
 import { renderCard } from '../../components/card.js';
 import { navigate } from '../../core/router.js';
+import { openTemplateEditor } from '../template-editor/template-editor.js';
 
 let durationInterval = null; // for the live-ticking duration on active workout
 
@@ -89,6 +90,23 @@ function buildHomeView(templates, activeWorkout) {
   templates.forEach(template => {
     templatesSection.appendChild(buildTemplateCard(template, activeWorkout));
   });
+
+  const newTemplateBtn = renderButton({
+    title: '+ NEW TEMPLATE',
+    variant: 'outline',
+    onClick: () => {
+      openTemplateEditor({
+        template: null,
+        onSave: () => {
+          const appEl = document.getElementById('app');
+          renderHome(appEl);
+        }
+      });
+    }
+  });
+  newTemplateBtn.className += ' home__new-template-btn';
+  templatesSection.appendChild(newTemplateBtn);
+
   container.appendChild(templatesSection);
 
   return container;
@@ -134,6 +152,9 @@ function buildTemplateCard(template, activeWorkout) {
     <div class="home__template-count">${template.exerciseNames.length} EXERCISES</div>
   `;
 
+  const btnsContainer = document.createElement('div');
+  btnsContainer.className = 'home__template-btns';
+
   const startBtn = renderButton({
     title: 'START',
     variant: 'outline',
@@ -143,7 +164,27 @@ function buildTemplateCard(template, activeWorkout) {
       navigate(`/workout/${workout.id}`);
     }
   });
-  content.appendChild(startBtn);
+  btnsContainer.appendChild(startBtn);
+
+  const editBtn = renderButton({
+    title: 'EDIT',
+    variant: 'outline',
+    onClick: (e) => {
+      e.stopPropagation();
+      openTemplateEditor({
+        template,
+        onSave: () => {
+          // re-render home after save/delete
+          const appEl = document.getElementById('app');
+          renderHome(appEl);
+        }
+      });
+    }
+  });
+  editBtn.className += ' home__template-edit-btn';
+  btnsContainer.appendChild(editBtn);
+
+  content.appendChild(btnsContainer);
 
   const card = renderCard({ children: [content] });
   card.className += ' home__template-card';

@@ -443,3 +443,114 @@ function createEmptySet() {
     isCompleted: false,
   };
 }
+
+// ============================================================================
+// Template CRUD
+// ============================================================================
+
+/**
+ * Create a new template
+ * @param {{ name: string, exerciseNames: string[], order?: number }} data
+ * @returns {Promise<import('./models.js').Template>}
+ */
+export async function createTemplate({ name, exerciseNames = [], order = 0 }) {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('templates', 'readwrite');
+    const template = {
+      id: crypto.randomUUID(),
+      name,
+      exerciseNames,
+      order,
+    };
+    const req = tx.objectStore('templates').add(template);
+    tx.oncomplete = () => resolve(template);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+/**
+ * Save (overwrite) an existing template
+ * @param {import('./models.js').Template} template
+ * @returns {Promise<import('./models.js').Template>}
+ */
+export async function updateTemplate(template) {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('templates', 'readwrite');
+    tx.objectStore('templates').put(template);
+    tx.oncomplete = () => resolve(template);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+/**
+ * Delete a template
+ * @param {import('./models.js').Template} template
+ * @returns {Promise<void>}
+ */
+export async function deleteTemplate(template) {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('templates', 'readwrite');
+    tx.objectStore('templates').delete(template.id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+// ============================================================================
+// Exercise CRUD
+// ============================================================================
+
+/**
+ * Save (overwrite) an existing exercise
+ * @param {import('./models.js').Exercise} exercise
+ * @returns {Promise<import('./models.js').Exercise>}
+ */
+export async function updateExercise(exercise) {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('exercises', 'readwrite');
+    tx.objectStore('exercises').put(exercise);
+    tx.oncomplete = () => resolve(exercise);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+/**
+ * Delete an exercise
+ * @param {import('./models.js').Exercise} exercise
+ * @returns {Promise<void>}
+ */
+export async function deleteExercise(exercise) {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('exercises', 'readwrite');
+    tx.objectStore('exercises').delete(exercise.id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+// ============================================================================
+// Stats queries
+// ============================================================================
+
+/**
+ * Fetch all workouts (completed and active), sorted by startedAt descending
+ * @returns {Promise<import('./models.js').Workout[]>}
+ */
+export async function fetchAllWorkouts() {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('workouts', 'readonly');
+    const req = tx.objectStore('workouts').getAll();
+    req.onsuccess = () => {
+      const all = req.result || [];
+      all.sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt));
+      resolve(all);
+    };
+    req.onerror = () => reject(req.error);
+  });
+}

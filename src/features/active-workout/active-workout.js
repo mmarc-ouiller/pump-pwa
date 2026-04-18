@@ -178,9 +178,9 @@ export async function renderActiveWorkout(appEl, { id }) {
     // Column headers
     const isCardio = workoutExercise.exerciseType === 'cardio';
     const colHeaders = document.createElement('div');
-    colHeaders.className = 'active-workout__col-headers';
+    colHeaders.className = `active-workout__col-headers active-workout__col-headers--${isCardio ? 'cardio' : 'strength'}`;
     if (isCardio) {
-      colHeaders.innerHTML = '<span>SET</span><span>DURATION</span><span></span>';
+      colHeaders.innerHTML = '<span>SET</span><span>DUR</span><span>SPD</span><span>INC</span><span>RES</span><span></span>';
     } else {
       colHeaders.innerHTML = '<span>SET</span><span>WEIGHT</span><span>REPS</span><span></span>';
     }
@@ -212,7 +212,7 @@ export async function renderActiveWorkout(appEl, { id }) {
    */
   function buildSetRow(set, setIndex, workoutExercise, isCardio) {
     const row = document.createElement('div');
-    row.className = `active-workout__set-row${set.isCompleted ? ' active-workout__set-row--completed' : ''}`;
+    row.className = `active-workout__set-row active-workout__set-row--${isCardio ? 'cardio' : 'strength'}${set.isCompleted ? ' active-workout__set-row--completed' : ''}`;
 
     // Set index
     const indexEl = document.createElement('span');
@@ -220,8 +220,9 @@ export async function renderActiveWorkout(appEl, { id }) {
     indexEl.textContent = setIndex;
     row.appendChild(indexEl);
 
-    // Input fields (weight/reps for strength, duration for cardio)
+    // Input fields (weight/reps for strength, duration/speed/incline/resistance for cardio)
     if (isCardio) {
+      // Duration (minutes)
       const durationInput = document.createElement('input');
       durationInput.className = 'active-workout__set-input';
       durationInput.type = 'text';
@@ -229,15 +230,61 @@ export async function renderActiveWorkout(appEl, { id }) {
       durationInput.placeholder = 'MIN';
       durationInput.value = set.duration != null ? set.duration : '';
       durationInput.addEventListener('input', (e) => {
-        clearTimeout(debounceTimers[set.id]);
-        debounceTimers[set.id] = setTimeout(async () => {
-          const value = parseFloat(e.target.value);
-          workout = await updateSet(workout, set.id, {
-            duration: isNaN(value) ? null : value,
-          });
+        clearTimeout(debounceTimers[set.id + '_dur']);
+        debounceTimers[set.id + '_dur'] = setTimeout(async () => {
+          const v = parseFloat(e.target.value);
+          workout = await updateSet(workout, set.id, { duration: isNaN(v) ? null : v });
         }, 250);
       });
       row.appendChild(durationInput);
+
+      // Speed (mph)
+      const speedInput = document.createElement('input');
+      speedInput.className = 'active-workout__set-input';
+      speedInput.type = 'text';
+      speedInput.inputMode = 'decimal';
+      speedInput.placeholder = 'MPH';
+      speedInput.value = set.speed != null ? set.speed : '';
+      speedInput.addEventListener('input', (e) => {
+        clearTimeout(debounceTimers[set.id + '_spd']);
+        debounceTimers[set.id + '_spd'] = setTimeout(async () => {
+          const v = parseFloat(e.target.value);
+          workout = await updateSet(workout, set.id, { speed: isNaN(v) ? null : v });
+        }, 250);
+      });
+      row.appendChild(speedInput);
+
+      // Incline (%)
+      const inclineInput = document.createElement('input');
+      inclineInput.className = 'active-workout__set-input';
+      inclineInput.type = 'text';
+      inclineInput.inputMode = 'decimal';
+      inclineInput.placeholder = '%';
+      inclineInput.value = set.incline != null ? set.incline : '';
+      inclineInput.addEventListener('input', (e) => {
+        clearTimeout(debounceTimers[set.id + '_inc']);
+        debounceTimers[set.id + '_inc'] = setTimeout(async () => {
+          const v = parseFloat(e.target.value);
+          workout = await updateSet(workout, set.id, { incline: isNaN(v) ? null : v });
+        }, 250);
+      });
+      row.appendChild(inclineInput);
+
+      // Resistance (level)
+      const resistanceInput = document.createElement('input');
+      resistanceInput.className = 'active-workout__set-input';
+      resistanceInput.type = 'text';
+      resistanceInput.inputMode = 'numeric';
+      resistanceInput.placeholder = 'LVL';
+      resistanceInput.value = set.resistance != null ? set.resistance : '';
+      resistanceInput.addEventListener('input', (e) => {
+        clearTimeout(debounceTimers[set.id + '_res']);
+        debounceTimers[set.id + '_res'] = setTimeout(async () => {
+          const v = parseInt(e.target.value);
+          workout = await updateSet(workout, set.id, { resistance: isNaN(v) ? null : v });
+        }, 250);
+      });
+      row.appendChild(resistanceInput);
     } else {
       // Weight input
       const weightInput = document.createElement('input');

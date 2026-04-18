@@ -1,0 +1,171 @@
+/* Phase 1A — Stats Feature Styles */
+
+.stats {
+  padding: 0 0 var(--space-xl);
+}
+
+.stats__header {
+  padding: var(--space-lg);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.stats__title {
+  font-family: var(--font-mono);
+  font-size: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.stats__empty {
+  padding: var(--space-xxl) var(--space-lg);
+  text-align: center;
+}
+
+.stats__empty-title {
+  font-family: var(--font-mono);
+  font-size: var(--font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0 0 var(--space-sm) 0;
+}
+
+.stats__empty-caption {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.stats__section {
+  padding: var(--space-lg);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.stats__section-title {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin: 0 0 var(--space-md) 0;
+  letter-spacing: 0.1em;
+}
+
+/* Streak blocks */
+.stats__streak-row {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.stats__streak-block {
+  flex: 1;
+  border: var(--border-width) solid var(--color-border);
+  padding: var(--space-md);
+  text-align: center;
+}
+
+.stats__streak-value {
+  font-family: var(--font-mono);
+  font-size: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 0 var(--space-xs) 0;
+}
+
+.stats__streak-label {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Bar chart */
+.stats__bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 100px;
+  border-bottom: var(--border-width) solid var(--color-border);
+  border-left: var(--border-width) solid var(--color-border);
+  padding: var(--space-xs) 0 0;
+  margin-top: var(--space-sm);
+}
+
+.stats__bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 2px;
+}
+
+.stats__bar {
+  width: 100%;
+  background: var(--color-fg);
+  min-height: 2px;
+  transition: height 0.2s ease;
+}
+
+.stats__bar-label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Exercise chips */
+.stats__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.stats__chip {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: var(--border-width) solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  padding: var(--space-xs) var(--space-sm);
+  cursor: pointer;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  min-height: 32px;
+  margin: 0;
+}
+
+.stats__chip:hover {
+  background: #f5f5f5;
+}
+
+.stats__chip--selected {
+  background: var(--color-fg);
+  color: var(--color-bg);
+}
+
+.stats__progression-chart {
+  min-height: 120px;
+}
+
+.stats__no-data {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  padding: var(--space-md) 0;
+  margin: 0;
+}

@@ -1,7 +1,7 @@
 // Minimal service worker: precache the shell, serve cache-first, update on new deploys.
 // Bump CACHE_VERSION to force clients to fetch the new shell.
 
-const CACHE_VERSION = 'pump-v2';
+const CACHE_VERSION = 'pump-v3';
 const CACHE_NAME = CACHE_VERSION;
 
 const ASSETS_TO_CACHE = [
@@ -32,6 +32,12 @@ const ASSETS_TO_CACHE = [
   './src/features/history/history.css',
   './src/features/exercise-picker/exercise-picker.js',
   './src/features/exercise-picker/exercise-picker.css',
+  './src/features/stats/stats.js',
+  './src/features/stats/stats.css',
+  './src/features/exercises/exercises.js',
+  './src/features/exercises/exercises.css',
+  './src/features/template-editor/template-editor.js',
+  './src/features/template-editor/template-editor.css',
 ];
 
 self.addEventListener("install", (event) => {

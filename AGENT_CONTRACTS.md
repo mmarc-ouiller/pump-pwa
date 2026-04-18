@@ -636,6 +636,33 @@ Tab bar navigation:
 
 ---
 
+---
+
+## V2 Additions
+
+### New Store Functions (added in V2)
+- `createTemplate({ name, exerciseNames, order })` → Template
+- `updateTemplate(template)` → Template
+- `deleteTemplate(template)` → void
+- `updateExercise(exercise)` → Exercise
+- `deleteExercise(exercise)` → void
+- `fetchAllWorkouts()` → Workout[] (all, including active, sorted by startedAt desc)
+
+### New Feature APIs
+- `openTemplateEditor({ template?, onSave })` — opens bottom-sheet editor (create or edit mode)
+- `closeTemplateEditor()` — closes editor
+- `renderStats(appEl)` — renders stats tab
+- `renderExercises(appEl)` — renders exercise bank tab
+
+### New Routes
+- `#/stats` → renderStats(appEl)
+- `#/exercises` → renderExercises(appEl)
+
+### V2 Tab Bar
+4 tabs: HOME (`/`), HISTORY (`/history`), STATS (`/stats`), EXERCISES (`/exercises`)
+
+---
+
 ## Testing Notes
 
 To test locally:

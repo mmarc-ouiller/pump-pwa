@@ -143,8 +143,6 @@
 
 .active-workout__col-headers {
   display: grid;
-  grid-template-columns: 2ch 1fr 1fr var(--touch-target);
-  gap: var(--space-sm);
   align-items: center;
   font-size: var(--font-caption);
   font-family: var(--font-mono);
@@ -156,16 +154,34 @@
   border-bottom: var(--border-width) solid var(--color-border);
 }
 
+.active-workout__col-headers--strength {
+  grid-template-columns: 2ch 1fr 1fr var(--touch-target);
+  gap: var(--space-sm);
+}
+
+.active-workout__col-headers--cardio {
+  grid-template-columns: 2ch 1fr 1fr 1fr 1fr var(--touch-target);
+  gap: 4px;
+}
+
 /* ========================================================================== */
 /* Set Row */
 /* ========================================================================== */
 
 .active-workout__set-row {
   display: grid;
-  grid-template-columns: 2ch 1fr 1fr var(--touch-target);
-  gap: var(--space-sm);
   align-items: center;
   margin-bottom: var(--space-sm);
+}
+
+.active-workout__set-row--strength {
+  grid-template-columns: 2ch 1fr 1fr var(--touch-target);
+  gap: var(--space-sm);
+}
+
+.active-workout__set-row--cardio {
+  grid-template-columns: 2ch 1fr 1fr 1fr 1fr var(--touch-target);
+  gap: 4px;
 }
 
 .active-workout__set-row--completed {
@@ -199,6 +215,13 @@
 
 .active-workout__set-input::placeholder {
   color: var(--color-muted);
+}
+
+.active-workout__set-row--cardio .active-workout__set-input {
+  min-width: 0;
+  width: 100%;
+  font-size: 0.75rem;
+  padding: var(--space-xs) 4px;
 }
 
 .active-workout__check {

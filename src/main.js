@@ -6,61 +6,40 @@ import { openDb } from './core/schema.js';
 import { seedIfNeeded } from './core/seed.js';
 import { onRouteChange, currentRoute, navigate } from './core/router.js';
 
-// Feature renderers are stubbed by Phase 1B agents
-let renderHome, renderHistory, renderActiveWorkout;
-
-async function loadFeatures() {
-  try {
-    const homeModule = await import('./features/home/home.js');
-    renderHome = homeModule.renderHome;
-  } catch (e) {
-    console.warn('Home feature not loaded yet:', e);
-  }
-
-  try {
-    const historyModule = await import('./features/history/history.js');
-    renderHistory = historyModule.renderHistory;
-  } catch (e) {
-    console.warn('History feature not loaded yet:', e);
-  }
-
-  try {
-    const activeWorkoutModule = await import('./features/active-workout/active-workout.js');
-    renderActiveWorkout = activeWorkoutModule.renderActiveWorkout;
-  } catch (e) {
-    console.warn('ActiveWorkout feature not loaded yet:', e);
-  }
-}
+const appEl = document.getElementById('app');
 
 /**
  * Route to the appropriate feature renderer
  */
-function renderRoute(route) {
-  const appEl = document.getElementById('app');
+async function renderRoute(route) {
   if (!appEl) return;
-
   appEl.innerHTML = '';
 
-  if (route.path === '/') {
-    if (renderHome) {
-      renderHome(appEl);
+  const path = route?.path || '/';
+
+  try {
+    if (path === '/' || path === '') {
+      const { renderHome } = await import('./features/home/home.js');
+      await renderHome(appEl);
+    } else if (path === '/history') {
+      const { renderHistory } = await import('./features/history/history.js');
+      await renderHistory(appEl);
+    } else if (path === '/workout/:id') {
+      const { renderActiveWorkout } = await import('./features/active-workout/active-workout.js');
+      await renderActiveWorkout(appEl, { id: route.params.id });
+    } else if (path === '/stats') {
+      const { renderStats } = await import('./features/stats/stats.js');
+      await renderStats(appEl);
+    } else if (path === '/exercises') {
+      const { renderExercises } = await import('./features/exercises/exercises.js');
+      await renderExercises(appEl);
     } else {
-      appEl.textContent = 'Home (loading...)';
+      const { renderHome } = await import('./features/home/home.js');
+      await renderHome(appEl);
     }
-  } else if (route.path === '/history') {
-    if (renderHistory) {
-      renderHistory(appEl);
-    } else {
-      appEl.textContent = 'History (loading...)';
-    }
-  } else if (route.path === '/workout/:id') {
-    if (renderActiveWorkout) {
-      renderActiveWorkout(appEl, route.params);
-    } else {
-      appEl.textContent = `Workout ${route.params.id} (loading...)`;
-    }
-  } else {
-    appEl.textContent = 'Unknown route';
+  } catch (err) {
+    console.error('Route render error:', err);
+    appEl.innerHTML = `<div style="padding:24px;font-family:monospace;font-size:0.875rem">ERROR LOADING PAGE<br><small>${err.message}</small></div>`;
   }
 }
 
@@ -68,12 +47,15 @@ function renderRoute(route) {
  * Update tab bar to highlight the active tab
  */
 function updateTabBar(route) {
+  const path = route?.path || '/';
   document.querySelectorAll('#tabbar .tab').forEach(tab => {
     const tabRoute = tab.dataset.route;
-    // Determine if this tab is active
-    const isActive = (!route || route.path === '/' || route.path === '')
-      ? tabRoute === '/'
-      : route.path.startsWith(tabRoute) && tabRoute !== '/';
+    let isActive = false;
+    if (tabRoute === '/') {
+      isActive = (path === '/' || path === '' || path === '/workout/:id');
+    } else {
+      isActive = path === tabRoute || path.startsWith(tabRoute + '/');
+    }
     tab.setAttribute('aria-current', isActive ? 'page' : 'false');
     tab.classList.toggle('tab--active', isActive);
   });
@@ -119,9 +101,6 @@ async function boot() {
     await seedIfNeeded();
     console.log('Data seeded');
 
-    // Load feature modules
-    await loadFeatures();
-
     // Set up UI
     setupTabBar();
     registerServiceWorker();
@@ -133,7 +112,7 @@ async function boot() {
     });
 
     const initial = currentRoute();
-    renderRoute(initial);
+    await renderRoute(initial);
     updateTabBar(initial);
   } catch (err) {
     console.error('Boot failed:', err);
