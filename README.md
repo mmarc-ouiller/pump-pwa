@@ -1,24 +1,42 @@
 # Pump
 
-Personal workout logger as a Progressive Web App. Replaces the SwiftUI
-`WorkoutApp` that was getting reinstalled weekly due to Apple free-provisioning
-expiry.
+Personal workout logger as a Progressive Web App. Replaces the archived SwiftUI `WorkoutApp` with a modern PWA that works offline and auto-updates without app store friction.
 
-## What this scaffold is
+## Architecture
 
-A deliberately tiny PWA spike — no build step, no framework, no backend. The
-point is to validate that the "Add to Home Screen → looks like a native app →
-works offline → auto-updates on redeploy" experience meets your bar before
-porting feature parity from the SwiftUI app.
+```
+src/
+├── core/                    # Shared utilities
+│   ├── schema.js           # IndexedDB database definition
+│   ├── store.js            # Data CRUD operations
+│   ├── seed.js             # Initial exercise library & templates
+│   ├── router.js           # Hash-based navigation
+│   ├── format.js           # Display formatting utilities
+│   └── models.js           # TypeScript-style JSDoc type definitions
+├── components/             # Reusable UI components
+│   ├── button.js           # Brutalist button renderer
+│   ├── card.js             # Card component with optional shadow
+│   └── textfield.js        # Text input field
+├── design/                 # Design system
+│   ├── tokens.css          # Color, spacing, typography tokens
+│   ├── base.css            # Reset and base styles
+│   └── components.css      # Component styles
+├── features/               # Page-level features (mutually exclusive routes)
+│   ├── home/               # Dashboard with active workout & templates
+│   ├── active-workout/     # Live set logger with timer
+│   ├── history/            # Past workouts grouped by date
+│   └── exercise-picker/    # Modal for selecting exercises
+└── main.js                 # App entry point, boot sequence, router wiring
+```
 
-Files:
+No build step. No framework. Pure vanilla ES modules with IndexedDB.
 
-- `index.html` — entry point with the logging form and history list
-- `styles.css` — dark theme, iOS safe-area aware
-- `app.js` — IndexedDB wiring, form handler, service-worker registration, "spike checks" indicators
-- `manifest.json` — PWA metadata (name, icons, standalone display)
-- `service-worker.js` — offline shell cache with network-first navigation
-- `icon-32.png`, `icon-192.png`, `icon-512.png` — placeholder icons (replace when you have a real design)
+## Features
+
+- **Home**: Dashboard showing active workout or quick-start options
+- **Active Workout**: Real-time set tracking with live timer
+- **History**: Date-grouped past workouts with stats and delete
+- **Exercise Picker**: Searchable exercise library with custom exercise creation
 
 ## Run locally
 
@@ -60,13 +78,6 @@ Any of these work with zero config. Pick one and push:
 3. Name it "Pump" and tap Add
 4. Launch from home screen — it should open full-screen with no browser chrome
 
-On the home-screen-launched app, check the "Spike checks" section — all four should say `yes`:
-
-- Loaded from manifest
-- Service worker active
-- IndexedDB available
-- Running standalone
-
 ## Update flow (the whole reason we're doing this)
 
 1. Edit code locally
@@ -82,14 +93,3 @@ No cables. No Xcode. No signing. No expiration.
 - **Storage eviction**: if you don't open the app for ~7 weeks, iOS may clear IndexedDB. Export to CSV/JSON is on the roadmap as an escape hatch.
 - **No push notifications** unless on iOS 16.4+ *and* installed to home screen. Not relevant for a workout logger.
 - **No HealthKit / Apple Watch integration** — this is the real tradeoff vs. native. If you later want Watch support, you'd go back to Swift or look at cross-platform native.
-
-## Next steps (after the spike)
-
-Port feature parity from `/sessions/beautiful-elegant-bell/mnt/WorkoutApp/`:
-
-- [ ] `ActiveWorkout` — the live set-logging flow (more sophisticated than this spike's single-set form)
-- [ ] `ExercisePicker` — searchable exercise library
-- [ ] `History` — date-grouped past workouts, per-exercise progression view
-- [ ] `Home` — dashboard / entry point
-- [ ] Replace placeholder icons with a real design
-- [ ] Add CSV export for data portability

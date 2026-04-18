@@ -1,0 +1,250 @@
+/**
+ * Phase 1B.2 — Active Workout Feature Styles
+ * Brutalist workout logging screen with live timer and set tracking
+ */
+
+.active-workout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+}
+
+/* ========================================================================== */
+/* Header Section */
+/* ========================================================================== */
+
+.active-workout__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.active-workout__name {
+  margin: 0;
+  font-size: var(--font-display);
+  font-family: var(--font-mono);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--color-fg);
+}
+
+.active-workout__duration {
+  font-size: var(--font-data);
+  font-family: var(--font-mono);
+  font-weight: bold;
+  color: var(--color-fg);
+}
+
+/* ========================================================================== */
+/* Actions Row */
+/* ========================================================================== */
+
+.active-workout__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md);
+  border-bottom: var(--border-width) solid var(--color-border);
+  gap: var(--space-md);
+}
+
+.active-workout__discard {
+  background-color: transparent;
+  color: var(--color-muted);
+  border: none;
+  font-family: var(--font-mono);
+  font-size: var(--font-body);
+  font-weight: bold;
+  text-transform: uppercase;
+  min-height: var(--touch-target);
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.active-workout__discard:hover {
+  color: var(--color-fg);
+}
+
+.active-workout__discard:active {
+  opacity: 0.8;
+}
+
+/* ========================================================================== */
+/* Exercises Container (Scrollable) */
+/* ========================================================================== */
+
+.active-workout__exercises {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-md);
+  padding-bottom: var(--space-xxl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ========================================================================== */
+/* Exercise Card */
+/* ========================================================================== */
+
+.active-workout__exercise-card {
+  border: var(--border-width) solid var(--color-border);
+  padding: var(--space-md);
+}
+
+.active-workout__exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.active-workout__exercise-name {
+  font-size: var(--font-heading);
+  font-family: var(--font-mono);
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--color-fg);
+  flex: 1;
+}
+
+.active-workout__remove-btn {
+  background-color: transparent;
+  border: var(--border-width) solid var(--color-border);
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-heading);
+  font-weight: bold;
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.active-workout__remove-btn:hover {
+  color: var(--color-fg);
+}
+
+.active-workout__remove-btn:active {
+  opacity: 0.8;
+}
+
+/* ========================================================================== */
+/* Column Headers */
+/* ========================================================================== */
+
+.active-workout__col-headers {
+  display: grid;
+  grid-template-columns: 2ch 1fr 1fr var(--touch-target);
+  gap: var(--space-sm);
+  align-items: center;
+  font-size: var(--font-caption);
+  font-family: var(--font-mono);
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+/* ========================================================================== */
+/* Set Row */
+/* ========================================================================== */
+
+.active-workout__set-row {
+  display: grid;
+  grid-template-columns: 2ch 1fr 1fr var(--touch-target);
+  gap: var(--space-sm);
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.active-workout__set-row--completed {
+  opacity: 0.5;
+}
+
+.active-workout__set-index {
+  font-size: var(--font-body);
+  font-family: var(--font-mono);
+  font-weight: bold;
+  text-align: center;
+  color: var(--color-fg);
+  width: 2ch;
+}
+
+.active-workout__set-input {
+  border: var(--border-width) solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: var(--font-body);
+  padding: var(--space-sm);
+  min-height: var(--touch-target);
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  text-align: center;
+}
+
+.active-workout__set-input:focus {
+  outline: var(--border-width-thick) solid var(--color-border);
+  outline-offset: -2px;
+}
+
+.active-workout__set-input::placeholder {
+  color: var(--color-muted);
+}
+
+.active-workout__check {
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  border: var(--border-width) solid var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-mono);
+  font-size: var(--font-body);
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.active-workout__check:hover {
+  background-color: #f5f5f5;
+}
+
+.active-workout__check--done {
+  background-color: var(--color-fg);
+  color: var(--color-bg);
+}
+
+.active-workout__check--done:hover {
+  background-color: var(--color-fg);
+}
+
+/* ========================================================================== */
+/* Action Buttons at Bottom */
+/* ========================================================================== */
+
+.active-workout__add-set {
+  width: 100%;
+  margin-top: var(--space-md);
+}
+
+.active-workout__add-exercise {
+  width: 100%;
+  margin-top: var(--space-md);
+}
+
+.active-workout__finish {
+  width: 100%;
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-xl);
+}

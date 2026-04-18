@@ -1,0 +1,42 @@
+/* Pump Design Tokens */
+/* Brutalist UI: white/black only, monospace typography, sharp corners, 2px borders */
+
+:root {
+  /* Colors */
+  --color-bg: #ffffff;
+  --color-fg: #000000;
+  --color-border: #000000;
+  --color-muted: #666666;
+
+  /* Typography: all monospace */
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Font sizes */
+  --font-display: 2rem;
+  --font-heading: 1.25rem;
+  --font-subheading: 1rem;
+  --font-body: 0.875rem;
+  --font-caption: 0.75rem;
+  --font-data: 1.125rem;
+
+  /* Spacing: 8pt grid */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+
+  /* Borders */
+  --border-width: 2px;
+  --border-width-thick: 4px;
+
+  /* Corners */
+  --radius: 0;
+
+  /* Layout */
+  --touch-target: 44px;
+
+  /* Animation */
+  --anim-duration: 150ms;
+}

@@ -1,0 +1,129 @@
+/**
+ * Phase 1B.1 — Home Feature CSS
+ * Brutalist design for the Home screen
+ */
+
+.home {
+  padding: var(--space-lg);
+  padding-bottom: calc(var(--space-xxl) + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ============================================================================
+ * Header
+ * ============================================================================ */
+
+.home__header {
+  padding-bottom: var(--space-lg);
+  border-bottom: var(--border-width) solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.home__title {
+  font-family: var(--font-mono);
+  font-size: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-fg);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.home__date {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+/* ============================================================================
+ * Active Workout Card
+ * ============================================================================ */
+
+.home__active-card {
+  width: 100%;
+  margin-bottom: var(--space-lg);
+}
+
+.home__active-label {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.home__active-name {
+  font-family: var(--font-mono);
+  font-size: var(--font-heading);
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-fg);
+  margin-bottom: var(--space-md);
+}
+
+.home__duration {
+  font-family: var(--font-mono);
+  font-size: var(--font-data);
+  font-weight: 700;
+  color: var(--color-fg);
+  margin-bottom: var(--space-md);
+}
+
+/* ============================================================================
+ * Quick Start Button
+ * ============================================================================ */
+
+.home__quick-start {
+  width: 100%;
+  margin-bottom: var(--space-lg);
+}
+
+/* ============================================================================
+ * Templates Section
+ * ============================================================================ */
+
+.home__templates {
+  margin-top: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.home__section-title {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin: 0;
+  margin-bottom: var(--space-md);
+}
+
+/* ============================================================================
+ * Template Card
+ * ============================================================================ */
+
+.home__template-card {
+  width: 100%;
+}
+
+.home__template-name {
+  font-family: var(--font-mono);
+  font-size: var(--font-heading);
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-fg);
+  margin-bottom: var(--space-sm);
+}
+
+.home__template-count {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}

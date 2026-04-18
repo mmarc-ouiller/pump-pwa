@@ -1,22 +1,42 @@
 // Minimal service worker: precache the shell, serve cache-first, update on new deploys.
 // Bump CACHE_VERSION to force clients to fetch the new shell.
 
-const CACHE_VERSION = "v1";
-const CACHE_NAME = `workout-${CACHE_VERSION}`;
+const CACHE_VERSION = 'pump-v2';
+const CACHE_NAME = CACHE_VERSION;
 
-const SHELL = [
-  "./",
-  "./index.html",
-  "./styles.css",
-  "./app.js",
-  "./manifest.json",
-  "./icon-192.png",
-  "./icon-512.png",
+const ASSETS_TO_CACHE = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-32.png',
+  './icon-192.png',
+  './icon-512.png',
+  './src/main.js',
+  './src/core/schema.js',
+  './src/core/models.js',
+  './src/core/store.js',
+  './src/core/seed.js',
+  './src/core/router.js',
+  './src/core/format.js',
+  './src/design/tokens.css',
+  './src/design/base.css',
+  './src/design/components.css',
+  './src/components/button.js',
+  './src/components/card.js',
+  './src/components/textfield.js',
+  './src/features/home/home.js',
+  './src/features/home/home.css',
+  './src/features/active-workout/active-workout.js',
+  './src/features/active-workout/active-workout.css',
+  './src/features/history/history.js',
+  './src/features/history/history.css',
+  './src/features/exercise-picker/exercise-picker.js',
+  './src/features/exercise-picker/exercise-picker.css',
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
   );
   self.skipWaiting();
 });
@@ -26,7 +46,7 @@ self.addEventListener("activate", (event) => {
     caches.keys().then((keys) =>
       Promise.all(
         keys
-          .filter((k) => k.startsWith("workout-") && k !== CACHE_NAME)
+          .filter((k) => k.startsWith("pump-") && k !== CACHE_NAME)
           .map((k) => caches.delete(k))
       )
     )

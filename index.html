@@ -3,58 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f172a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Pump" />
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="apple-touch-icon" href="./icon-192.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="./icon-32.png" />
-  <link rel="stylesheet" href="./styles.css" />
   <title>Pump</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./src/design/base.css" />
+  <link rel="stylesheet" href="./src/design/components.css" />
+  <link rel="stylesheet" href="./src/features/home/home.css" />
+  <link rel="stylesheet" href="./src/features/active-workout/active-workout.css" />
+  <link rel="stylesheet" href="./src/features/history/history.css" />
+  <link rel="stylesheet" href="./src/features/exercise-picker/exercise-picker.css" />
+  <style>
+    #tabbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      width: 100%;
+      height: var(--touch-target);
+      background: var(--color-bg);
+      border-top: var(--border-width) solid var(--color-border);
+      font-family: var(--font-mono);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    #tabbar .tab {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--color-fg);
+      font-size: var(--font-caption);
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      border-right: var(--border-width) solid var(--color-border);
+      font-family: var(--font-mono);
+    }
+
+    #tabbar .tab:last-child {
+      border-right: none;
+    }
+
+    #tabbar .tab[aria-current="page"] {
+      background: var(--color-fg);
+      color: var(--color-bg);
+    }
+
+    body {
+      padding-bottom: calc(var(--touch-target) + env(safe-area-inset-bottom));
+    }
+
+    #modal {
+      border: var(--border-width) solid var(--color-border);
+      border-radius: var(--radius);
+    }
+
+    #modal::backdrop {
+      background: rgba(0, 0, 0, 0.5);
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Pump</h1>
-    <span id="status" class="status">loading…</span>
-  </header>
-
-  <main>
-    <section id="today">
-      <h2>Today</h2>
-      <form id="log-form">
-        <label>
-          Exercise
-          <input name="exercise" required placeholder="e.g. Bench Press" />
-        </label>
-        <label>
-          Weight (lb)
-          <input name="weight" type="number" step="0.5" required />
-        </label>
-        <label>
-          Reps
-          <input name="reps" type="number" required />
-        </label>
-        <button type="submit">Log set</button>
-      </form>
-    </section>
-
-    <section id="history">
-      <h2>Recent sets</h2>
-      <ul id="history-list"></ul>
-    </section>
-
-    <section id="spike-checks">
-      <h2>Spike checks</h2>
-      <ul>
-        <li id="check-pwa">Loaded from manifest: <span>?</span></li>
-        <li id="check-sw">Service worker active: <span>?</span></li>
-        <li id="check-idb">IndexedDB available: <span>?</span></li>
-        <li id="check-standalone">Running standalone (home-screen): <span>?</span></li>
-      </ul>
-    </section>
-  </main>
-
-  <script src="./app.js" type="module"></script>
+  <div id="app"></div>
+  <nav id="tabbar">
+    <button class="tab" data-route="/" aria-current="page">HOME</button>
+    <button class="tab" data-route="/history">HISTORY</button>
+  </nav>
+  <dialog id="modal" aria-modal="true" aria-label="Exercise Picker"></dialog>
+  <script type="module" src="./src/main.js"></script>
 </body>
 </html>
