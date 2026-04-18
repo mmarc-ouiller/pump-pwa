@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Pump" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./icon-32.png" />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>Pump</title>
+</head>
+<body>
+  <header>
+    <h1>Pump</h1>
+    <span id="status" class="status">loading…</span>
+  </header>
+
+  <main>
+    <section id="today">
+      <h2>Today</h2>
+      <form id="log-form">
+        <label>
+          Exercise
+          <input name="exercise" required placeholder="e.g. Bench Press" />
+        </label>
+        <label>
+          Weight (lb)
+          <input name="weight" type="number" step="0.5" required />
+        </label>
+        <label>
+          Reps
+          <input name="reps" type="number" required />
+        </label>
+        <button type="submit">Log set</button>
+      </form>
+    </section>
+
+    <section id="history">
+      <h2>Recent sets</h2>
+      <ul id="history-list"></ul>
+    </section>
+
+    <section id="spike-checks">
+      <h2>Spike checks</h2>
+      <ul>
+        <li id="check-pwa">Loaded from manifest: <span>?</span></li>
+        <li id="check-sw">Service worker active: <span>?</span></li>
+        <li id="check-idb">IndexedDB available: <span>?</span></li>
+        <li id="check-standalone">Running standalone (home-screen): <span>?</span></li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="./app.js" type="module"></script>
+</body>
+</html>
