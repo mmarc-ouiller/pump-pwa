@@ -1,18 +1,21 @@
 /**
  * Hash-based router for Pump PWA
- * Routes: #/ (home), #/history, #/workout/:id, #/picker
+ * Routes: #/ (home), #/history, #/history/:id, #/workout/:id, #/picker
  */
 
 const ROUTES = {
   '/': 'home',
   '/history': 'history',
   '/workout/:id': 'active-workout',
+  '/workout/:id/summary': 'workout-summary',
+  '/history/:id': 'workout-detail',
+  '/template-editor/:id': 'template-editor',
   '/picker': 'picker',
 };
 
 /**
  * Navigate to a route
- * @param {string} path - e.g., '/', '/history', '/workout/abc123'
+ * @param {string} path - e.g., '/', '/history', '/workout/abc123', '/history/abc123'
  */
 export function navigate(path) {
   window.location.hash = path;
@@ -31,10 +34,27 @@ export function currentRoute() {
     return { path: hash, params: {} };
   }
 
-  // Try parametric routes
+  // Try parametric routes (check more specific routes first)
+  // Parse /workout/:id/summary BEFORE /workout/:id (more specific first)
+  if (hash.startsWith('/workout/') && hash.endsWith('/summary')) {
+    const id = hash.slice('/workout/'.length, -'/summary'.length);
+    return { path: '/workout/:id/summary', params: { id } };
+  }
+
+  if (hash.startsWith('/history/')) {
+    const id = hash.slice('/history/'.length);
+    return { path: '/history/:id', params: { id } };
+  }
+
   if (hash.startsWith('/workout/')) {
     const id = hash.slice('/workout/'.length);
     return { path: '/workout/:id', params: { id } };
+  }
+
+  // Parse /template-editor/:id
+  if (hash.startsWith('/template-editor/')) {
+    const id = hash.slice('/template-editor/'.length);
+    return { path: '/template-editor/:id', params: { id } };
   }
 
   // Default to home

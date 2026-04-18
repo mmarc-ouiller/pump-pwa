@@ -1,5 +1,6 @@
 /**
- * Phase 1B.3 — History Feature Styles
+ * Phase 1C — History Feature Styles
+ * Tappable cards, smart date labels, compact layout
  */
 
 .history {
@@ -72,17 +73,24 @@
   z-index: 10;
 }
 
-/* Workout cards */
+/* Workout cards — tappable */
 .history__workout {
   padding: var(--space-md) var(--space-lg);
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: var(--border-width) solid var(--color-border);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  user-select: none;
+}
+
+.history__workout:active {
+  background-color: var(--color-muted-bg);
 }
 
 .history__workout-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-md);
+  align-items: flex-start;
+  margin-bottom: var(--space-sm);
   gap: var(--space-md);
 }
 
@@ -112,6 +120,7 @@
   color: var(--color-muted);
   cursor: pointer;
   flex-shrink: 0;
+  transition: color 0.15s ease;
 }
 
 .history__delete-btn:hover {
@@ -122,43 +131,19 @@
   opacity: 0.7;
 }
 
-/* Stats */
-.history__stats {
-  display: flex;
-  flex-direction: row;
-  gap: var(--space-lg);
-  margin-bottom: var(--space-md);
-}
-
-.history__stat {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.history__stat-label {
-  display: block;
-  font-size: var(--font-caption);
-  font-family: var(--font-mono);
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--color-muted);
-}
-
-/* Last child of stat label is the value */
-.history__stat {
-  font-size: var(--font-body);
-  font-family: var(--font-mono);
-  color: var(--color-fg);
-}
-
-/* Exercise preview */
-.history__exercises-preview {
+/* Date/time and duration */
+.history__datetime {
   font-size: var(--font-caption);
   font-family: var(--font-mono);
   color: var(--color-muted);
-  font-weight: 400;
-  margin-top: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+/* Summary: exercises and sets */
+.history__summary {
+  font-size: var(--font-caption);
+  font-family: var(--font-mono);
+  color: var(--color-muted);
 }
 
 /* Responsive: Reduce padding on very small screens */

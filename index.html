@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#ffffff" />
   <title>Pump</title>
   <link rel="manifest" href="./manifest.json" />
   <link rel="stylesheet" href="./src/design/base.css" />
@@ -33,7 +34,7 @@
 
     #tabbar .tab {
       height: 56px;
-      font-family: var(--font-mono);
+      font-family: var(--font-base);
       font-size: 0.65rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -42,7 +43,7 @@
       border: none;
       border-right: var(--border-width) solid var(--color-border);
       cursor: pointer;
-      color: var(--color-muted);
+      color: var(--color-text-muted);
       -webkit-tap-highlight-color: transparent;
       padding: 0 2px;
     }
@@ -53,8 +54,8 @@
 
     #tabbar .tab[aria-current="page"],
     #tabbar .tab.tab--active {
-      background: var(--color-fg);
-      color: var(--color-bg);
+      background: var(--color-text);
+      color: var(--color-surface);
     }
 
     #app {

@@ -1,0 +1,173 @@
+/**
+ * Card Stack Component CSS
+ * Horizontal scroll-snap carousel with long-press action sheet
+ */
+
+.card-stack {
+  display: flex;
+  gap: var(--space-md);
+  padding: 0 var(--space-lg) var(--space-md);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Remove scrollbar styling while keeping functionality */
+.card-stack::-webkit-scrollbar {
+  display: none;
+}
+
+.card-stack {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ============================================================================
+ * Card
+ * ============================================================================ */
+
+.card-stack__card {
+  flex-shrink: 0;
+  width: min(320px, 85vw);
+  scroll-snap-align: start;
+
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+
+  cursor: pointer;
+  transition: box-shadow var(--anim-duration);
+}
+
+.card-stack__card:active {
+  box-shadow: 4px 4px 0 var(--color-border);
+}
+
+/* ============================================================================
+ * Card Content
+ * ============================================================================ */
+
+.card-stack__title {
+  font-family: var(--font-mono);
+  font-size: var(--font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-fg);
+  margin-bottom: var(--space-xs);
+}
+
+.card-stack__exercise-count {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.card-stack__preview {
+  font-family: var(--font-mono);
+  font-size: var(--font-body);
+  color: var(--color-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: var(--space-xs);
+}
+
+.card-stack__completed {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  color: var(--color-muted);
+  margin-top: auto;
+}
+
+/* ============================================================================
+ * Action Sheet Overlay
+ * ============================================================================ */
+
+.card-stack__action-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-lg);
+  animation: fadeIn var(--anim-duration) ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.card-stack__action-sheet {
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 4px 4px 0 var(--color-border);
+  animation: slideUp var(--anim-duration) ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ============================================================================
+ * Action Buttons
+ * ============================================================================ */
+
+.card-stack__action-btn {
+  font-family: var(--font-mono);
+  font-size: var(--font-body);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-sm) var(--space-md);
+  min-height: var(--touch-target);
+  cursor: pointer;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  transition: transform var(--anim-duration), box-shadow var(--anim-duration);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card-stack__action-btn:active {
+  transform: translate(2px, 2px);
+}
+
+/* Delete button: red text to signal destructiveness */
+.card-stack__action-btn--delete {
+  color: #dc2626; /* Red for delete */
+}
+
+.card-stack__action-btn--delete:active {
+  transform: translate(2px, 2px);
+}

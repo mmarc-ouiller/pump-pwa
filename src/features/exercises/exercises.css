@@ -1,4 +1,4 @@
-/* Phase 1B — Exercise Bank Tab */
+/* Phase 1F — Exercises Tab with Body-Part Taxonomy */
 
 .exercises {
   display: flex;
@@ -46,6 +46,7 @@
   color: var(--color-muted);
 }
 
+/* Filter chips container */
 .exercises__chips {
   display: flex;
   overflow-x: auto;
@@ -76,11 +77,12 @@
   border-radius: var(--radius);
 }
 
-.exercises__chip--selected {
+.exercises__chip--active {
   background: var(--color-fg);
   color: var(--color-bg);
 }
 
+/* List */
 .exercises__list {
   flex: 1;
   overflow-y: auto;
@@ -102,6 +104,7 @@
   letter-spacing: 0.1em;
 }
 
+/* Exercise row */
 .exercises__row {
   display: flex;
   align-items: center;
@@ -125,27 +128,37 @@
   margin-bottom: 2px;
 }
 
-.exercises__row-tags {
+.exercises__row-badges {
   display: flex;
   gap: var(--space-xs);
   flex-wrap: wrap;
 }
 
-.exercises__tag {
+.exercises__badge {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   text-transform: uppercase;
-  color: var(--color-muted);
-  border: 1px solid var(--color-muted);
-  padding: 0 4px;
+  color: var(--color-fg);
+  border: var(--border-width) solid var(--color-border);
+  padding: var(--space-xs) 4px;
+  border-radius: var(--radius);
+  display: inline-block;
 }
 
-.exercises__tag--custom {
-  color: var(--color-fg);
+.exercises__badge--weight,
+.exercises__badge--seconds,
+.exercises__badge--repsOnly {
+  border-color: var(--color-muted);
+  color: var(--color-muted);
+}
+
+.exercises__badge--custom {
   border-color: var(--color-fg);
+  color: var(--color-fg);
   font-weight: 700;
 }
 
+/* Row actions (edit/delete) */
 .exercises__row-actions {
   display: flex;
   gap: var(--space-xs);
@@ -154,21 +167,27 @@
 
 .exercises__action-btn {
   font-family: var(--font-mono);
-  font-size: var(--font-caption);
+  font-size: var(--font-body);
   font-weight: 700;
-  text-transform: uppercase;
   border: var(--border-width) solid var(--color-border);
   background: var(--color-bg);
   color: var(--color-fg);
   min-width: 44px;
-  min-height: 36px;
+  min-height: 44px;
   cursor: pointer;
-  padding: 0 var(--space-sm);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
 }
 
-.exercises__action-btn--danger {
-  color: var(--color-muted);
-  font-size: 1.2rem;
+.exercises__action-btn--edit {
+  font-size: 1rem;
+}
+
+.exercises__action-btn--delete {
+  font-size: 1rem;
 }
 
 .exercises__empty {
@@ -180,7 +199,7 @@
   color: var(--color-muted);
 }
 
-/* Inline edit/create form overlay */
+/* Form overlay */
 .exercises__form-overlay {
   position: fixed;
   inset: 0;
@@ -235,6 +254,7 @@
   text-transform: uppercase;
   color: var(--color-muted);
   letter-spacing: 0.05em;
+  margin-top: var(--space-sm);
 }
 
 .exercises__form-input {
@@ -251,13 +271,15 @@
   border-radius: var(--radius);
 }
 
-.exercises__form-chips {
+/* Form options (body-part and measure-by chips) */
+.exercises__form-options {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
 }
 
 .exercises__form-save {
   width: 100%;
-  margin-top: var(--space-sm);
+  margin-top: var(--space-md);
 }

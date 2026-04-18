@@ -1,100 +1,354 @@
 /**
- * Phase 1A.2 — Seed Data
+ * Phase 0 — Seed Data (V2)
  * Initial exercise library and templates for first launch
  */
 
-import { fetchExercises, createExercise, fetchTemplates } from './store.js';
-import { openDb } from './schema.js';
+import { createExercise, fetchExercises, createTemplate, fetchTemplates } from './store.js';
 
 /**
- * Full exercise library from ExerciseLibrary.swift
- * Each exercise has: name, category ('push'|'pull'|'legs'|'core'|'cardio'), type ('strength'|'cardio')
- * @type {Array<{name: string, category: string, type: string}>}
+ * Exercise library with body-part types and measurement methods
+ * 47 exercises total
+ * @type {Array<{name: string, type: BodyPart, measureBy: MeasureBy}>}
  */
 const EXERCISE_LIBRARY = [
-  // PUSH
-  { name: 'Bench Press', category: 'push', type: 'strength' },
-  { name: 'Incline Bench Press', category: 'push', type: 'strength' },
-  { name: 'Dumbbell Press', category: 'push', type: 'strength' },
-  { name: 'Overhead Press', category: 'push', type: 'strength' },
-  { name: 'Dumbbell Shoulder Press', category: 'push', type: 'strength' },
-  { name: 'Push-ups', category: 'push', type: 'strength' },
-  { name: 'Dips', category: 'push', type: 'strength' },
-  { name: 'Tricep Pushdown', category: 'push', type: 'strength' },
-  { name: 'Skull Crushers', category: 'push', type: 'strength' },
-  { name: 'Lateral Raises', category: 'push', type: 'strength' },
-  { name: 'Cable Flyes', category: 'push', type: 'strength' },
+  // CHEST
+  { name: 'Bench Press', type: 'chest', measureBy: 'weight' },
+  { name: 'Incline Bench Press', type: 'chest', measureBy: 'weight' },
+  { name: 'Dumbbell Press', type: 'chest', measureBy: 'weight' },
+  { name: 'Push-ups', type: 'chest', measureBy: 'repsOnly' },
+  { name: 'Dips', type: 'chest', measureBy: 'repsOnly' },
+  { name: 'Cable Flyes', type: 'chest', measureBy: 'weight' },
 
-  // PULL
-  { name: 'Deadlift', category: 'pull', type: 'strength' },
-  { name: 'Barbell Row', category: 'pull', type: 'strength' },
-  { name: 'Dumbbell Row', category: 'pull', type: 'strength' },
-  { name: 'Pull-ups', category: 'pull', type: 'strength' },
-  { name: 'Chin-ups', category: 'pull', type: 'strength' },
-  { name: 'Lat Pulldown', category: 'pull', type: 'strength' },
-  { name: 'Seated Cable Row', category: 'pull', type: 'strength' },
-  { name: 'Face Pulls', category: 'pull', type: 'strength' },
-  { name: 'Barbell Curl', category: 'pull', type: 'strength' },
-  { name: 'Dumbbell Curl', category: 'pull', type: 'strength' },
-  { name: 'Hammer Curl', category: 'pull', type: 'strength' },
-  { name: 'Shrugs', category: 'pull', type: 'strength' },
+  // BACK
+  { name: 'Deadlift', type: 'back', measureBy: 'weight' },
+  { name: 'Barbell Row', type: 'back', measureBy: 'weight' },
+  { name: 'Dumbbell Row', type: 'back', measureBy: 'weight' },
+  { name: 'Pull-ups', type: 'back', measureBy: 'repsOnly' },
+  { name: 'Chin-ups', type: 'back', measureBy: 'repsOnly' },
+  { name: 'Lat Pulldown', type: 'back', measureBy: 'weight' },
+  { name: 'Seated Cable Row', type: 'back', measureBy: 'weight' },
+  { name: 'Face Pulls', type: 'back', measureBy: 'weight' },
+  { name: 'Shrugs', type: 'back', measureBy: 'weight' },
+
+  // SHOULDERS
+  { name: 'Overhead Press', type: 'shoulders', measureBy: 'weight' },
+  { name: 'Dumbbell Shoulder Press', type: 'shoulders', measureBy: 'weight' },
+  { name: 'Lateral Raises', type: 'shoulders', measureBy: 'weight' },
+
+  // BICEPS
+  { name: 'Barbell Curl', type: 'biceps', measureBy: 'weight' },
+  { name: 'Dumbbell Curl', type: 'biceps', measureBy: 'weight' },
+  { name: 'Hammer Curl', type: 'biceps', measureBy: 'weight' },
+
+  // TRICEPS
+  { name: 'Tricep Pushdown', type: 'triceps', measureBy: 'weight' },
+  { name: 'Skull Crushers', type: 'triceps', measureBy: 'weight' },
 
   // LEGS
-  { name: 'Squat', category: 'legs', type: 'strength' },
-  { name: 'Front Squat', category: 'legs', type: 'strength' },
-  { name: 'Leg Press', category: 'legs', type: 'strength' },
-  { name: 'Romanian Deadlift', category: 'legs', type: 'strength' },
-  { name: 'Lunges', category: 'legs', type: 'strength' },
-  { name: 'Bulgarian Split Squat', category: 'legs', type: 'strength' },
-  { name: 'Leg Extension', category: 'legs', type: 'strength' },
-  { name: 'Leg Curl', category: 'legs', type: 'strength' },
-  { name: 'Calf Raises', category: 'legs', type: 'strength' },
-  { name: 'Hip Thrust', category: 'legs', type: 'strength' },
-  { name: 'Goblet Squat', category: 'legs', type: 'strength' },
+  { name: 'Squat', type: 'legs', measureBy: 'weight' },
+  { name: 'Front Squat', type: 'legs', measureBy: 'weight' },
+  { name: 'Leg Press', type: 'legs', measureBy: 'weight' },
+  { name: 'Romanian Deadlift', type: 'legs', measureBy: 'weight' },
+  { name: 'Lunges', type: 'legs', measureBy: 'weight' },
+  { name: 'Bulgarian Split Squat', type: 'legs', measureBy: 'weight' },
+  { name: 'Leg Extension', type: 'legs', measureBy: 'weight' },
+  { name: 'Leg Curl', type: 'legs', measureBy: 'weight' },
+  { name: 'Calf Raises', type: 'legs', measureBy: 'weight' },
+  { name: 'Hip Thrust', type: 'legs', measureBy: 'weight' },
+  { name: 'Goblet Squat', type: 'legs', measureBy: 'weight' },
 
   // CORE
-  { name: 'Plank', category: 'core', type: 'strength' },
-  { name: 'Hanging Leg Raise', category: 'core', type: 'strength' },
-  { name: 'Cable Crunch', category: 'core', type: 'strength' },
-  { name: 'Ab Wheel Rollout', category: 'core', type: 'strength' },
-  { name: 'Russian Twist', category: 'core', type: 'strength' },
-  { name: 'Dead Bug', category: 'core', type: 'strength' },
-  { name: 'Bird Dog', category: 'core', type: 'strength' },
-  { name: 'Side Plank', category: 'core', type: 'strength' },
+  { name: 'Plank', type: 'core', measureBy: 'seconds' },
+  { name: 'Side Plank', type: 'core', measureBy: 'seconds' },
+  { name: 'Hanging Leg Raise', type: 'core', measureBy: 'repsOnly' },
+  { name: 'Cable Crunch', type: 'core', measureBy: 'weight' },
+  { name: 'Ab Wheel Rollout', type: 'core', measureBy: 'repsOnly' },
+  { name: 'Russian Twist', type: 'core', measureBy: 'repsOnly' },
+  { name: 'Dead Bug', type: 'core', measureBy: 'repsOnly' },
+  { name: 'Bird Dog', type: 'core', measureBy: 'repsOnly' },
 
   // CARDIO
-  { name: 'Treadmill', category: 'cardio', type: 'cardio' },
-  { name: 'Elliptical', category: 'cardio', type: 'cardio' },
-  { name: 'Stationary Bike', category: 'cardio', type: 'cardio' },
-  { name: 'Rowing Machine', category: 'cardio', type: 'cardio' },
-  { name: 'Stair Climber', category: 'cardio', type: 'cardio' },
-  { name: 'Jump Rope', category: 'cardio', type: 'cardio' },
+  { name: 'Treadmill', type: 'cardio', measureBy: 'seconds' },
+  { name: 'Elliptical', type: 'cardio', measureBy: 'seconds' },
+  { name: 'Stationary Bike', type: 'cardio', measureBy: 'seconds' },
+  { name: 'Rowing Machine', type: 'cardio', measureBy: 'seconds' },
+  { name: 'Stair Climber', type: 'cardio', measureBy: 'seconds' },
+  { name: 'Jump Rope', type: 'cardio', measureBy: 'seconds' },
 ];
 
 /**
- * Default templates matching ExerciseLibrary.swift
- * @type {Array<{name: string, order: number, exerciseNames: Array<string>}>}
+ * Seed templates with fully-populated templateExercises and setGroups
  */
 const DEFAULT_TEMPLATES = [
   {
     name: 'Push Day',
     order: 0,
-    exerciseNames: ['Bench Press', 'Overhead Press', 'Dumbbell Press', 'Tricep Pushdown', 'Lateral Raises'],
+    exercises: [
+      {
+        name: 'Stair Climber',
+        sets: [{ sets: 1, duration: 900 }],
+      },
+      {
+        name: 'Bench Press',
+        sets: [{ sets: 4, weight: 155, reps: 8 }],
+      },
+      {
+        name: 'Overhead Press',
+        sets: [{ sets: 3, weight: 95, reps: 8 }],
+      },
+      {
+        name: 'Dumbbell Press',
+        sets: [{ sets: 3, weight: 50, reps: 10 }],
+      },
+      {
+        name: 'Tricep Pushdown',
+        sets: [{ sets: 3, weight: 40, reps: 12 }],
+      },
+      {
+        name: 'Cable Flyes',
+        sets: [{ sets: 3, weight: 25, reps: 12 }],
+      },
+      {
+        name: 'Skull Crushers',
+        sets: [{ sets: 3, weight: 50, reps: 10 }],
+      },
+    ],
   },
   {
     name: 'Pull Day',
     order: 1,
-    exerciseNames: ['Deadlift', 'Barbell Row', 'Pull-ups', 'Face Pulls', 'Barbell Curl'],
+    exercises: [
+      {
+        name: 'Stair Climber',
+        sets: [{ sets: 1, duration: 900 }],
+      },
+      {
+        name: 'Lat Pulldown',
+        sets: [{ sets: 4, weight: 130, reps: 8 }],
+      },
+      {
+        name: 'Seated Cable Row',
+        sets: [{ sets: 3, weight: 120, reps: 10 }],
+      },
+      {
+        name: 'Face Pulls',
+        sets: [{ sets: 3, weight: 30, reps: 15 }],
+      },
+      {
+        name: 'Barbell Curl',
+        sets: [{ sets: 3, weight: 65, reps: 10 }],
+      },
+      {
+        name: 'Hammer Curl',
+        sets: [{ sets: 3, weight: 25, reps: 12 }],
+      },
+      {
+        name: 'Lateral Raises',
+        sets: [{ sets: 3, weight: 15, reps: 15 }],
+      },
+      {
+        name: 'Shrugs',
+        sets: [{ sets: 3, weight: 60, reps: 12 }],
+      },
+    ],
   },
   {
     name: 'Leg Day',
     order: 2,
-    exerciseNames: ['Squat', 'Romanian Deadlift', 'Leg Press', 'Leg Curl', 'Calf Raises'],
+    exercises: [
+      {
+        name: 'Stair Climber',
+        sets: [{ sets: 1, duration: 900 }],
+      },
+      {
+        name: 'Leg Press',
+        sets: [{ sets: 4, weight: 270, reps: 8 }],
+      },
+      {
+        name: 'Lunges',
+        sets: [{ sets: 3, weight: 35, reps: 10 }],
+      },
+      {
+        name: 'Hip Thrust',
+        sets: [{ sets: 3, weight: 185, reps: 10 }],
+      },
+      {
+        name: 'Leg Curl',
+        sets: [{ sets: 3, weight: 90, reps: 10 }],
+      },
+      {
+        name: 'Leg Extension',
+        sets: [{ sets: 3, weight: 70, reps: 12 }],
+      },
+      {
+        name: 'Calf Raises',
+        sets: [{ sets: 3, weight: 60, reps: 15 }],
+      },
+    ],
   },
   {
     name: 'Core Day',
     order: 3,
-    exerciseNames: ['Plank', 'Hanging Leg Raise', 'Cable Crunch', 'Russian Twist'],
+    exercises: [
+      {
+        name: 'Stair Climber',
+        sets: [{ sets: 1, duration: 900 }],
+      },
+      {
+        name: 'Plank',
+        sets: [{ sets: 3, duration: 45 }],
+      },
+      {
+        name: 'Side Plank',
+        sets: [{ sets: 3, duration: 30 }],
+      },
+      {
+        name: 'Hanging Leg Raise',
+        sets: [{ sets: 3, reps: 12 }],
+      },
+      {
+        name: 'Cable Crunch',
+        sets: [{ sets: 3, weight: 30, reps: 15 }],
+      },
+      {
+        name: 'Ab Wheel Rollout',
+        sets: [{ sets: 3, reps: 10 }],
+      },
+      {
+        name: 'Russian Twist',
+        sets: [{ sets: 3, reps: 20 }],
+      },
+      {
+        name: 'Dead Bug',
+        sets: [{ sets: 3, reps: 10 }],
+      },
+      {
+        name: 'Bird Dog',
+        sets: [{ sets: 3, reps: 10 }],
+      },
+    ],
+  },
+  {
+    name: 'Full Body 1',
+    order: 4,
+    exercises: [
+      {
+        name: 'Stair Climber',
+        sets: [{ sets: 1, duration: 900 }],
+      },
+      {
+        name: 'Bench Press',
+        sets: [{ sets: 3, weight: 135, reps: 10 }],
+      },
+      {
+        name: 'Lat Pulldown',
+        sets: [{ sets: 3, weight: 115, reps: 10 }],
+      },
+      {
+        name: 'Overhead Press',
+        sets: [{ sets: 3, weight: 80, reps: 10 }],
+      },
+      {
+        name: 'Barbell Curl',
+        sets: [{ sets: 3, weight: 55, reps: 12 }],
+      },
+      {
+        name: 'Tricep Pushdown',
+        sets: [{ sets: 3, weight: 35, reps: 12 }],
+      },
+      {
+        name: 'Leg Press',
+        sets: [{ sets: 3, weight: 225, reps: 12 }],
+      },
+      {
+        name: 'Plank',
+        sets: [{ sets: 3, duration: 45 }],
+      },
+    ],
+  },
+  {
+    name: 'Full Body 2',
+    order: 5,
+    exercises: [
+      {
+        name: 'Stair Climber',
+        sets: [{ sets: 1, duration: 900 }],
+      },
+      {
+        name: 'Dumbbell Press',
+        sets: [{ sets: 3, weight: 50, reps: 10 }],
+      },
+      {
+        name: 'Seated Cable Row',
+        sets: [{ sets: 3, weight: 120, reps: 10 }],
+      },
+      {
+        name: 'Lateral Raises',
+        sets: [{ sets: 3, weight: 15, reps: 15 }],
+      },
+      {
+        name: 'Hammer Curl',
+        sets: [{ sets: 3, weight: 25, reps: 12 }],
+      },
+      {
+        name: 'Skull Crushers',
+        sets: [{ sets: 3, weight: 50, reps: 10 }],
+      },
+      {
+        name: 'Hip Thrust',
+        sets: [{ sets: 3, weight: 185, reps: 10 }],
+      },
+      {
+        name: 'Leg Curl',
+        sets: [{ sets: 3, weight: 90, reps: 10 }],
+      },
+      {
+        name: 'Hanging Leg Raise',
+        sets: [{ sets: 3, reps: 12 }],
+      },
+    ],
+  },
+  {
+    name: 'Full Body 3',
+    order: 6,
+    exercises: [
+      {
+        name: 'Stair Climber',
+        sets: [{ sets: 1, duration: 900 }],
+      },
+      {
+        name: 'Incline Bench Press',
+        sets: [{ sets: 3, weight: 115, reps: 10 }],
+      },
+      {
+        name: 'Dumbbell Row',
+        sets: [{ sets: 3, weight: 55, reps: 10 }],
+      },
+      {
+        name: 'Face Pulls',
+        sets: [{ sets: 3, weight: 30, reps: 15 }],
+      },
+      {
+        name: 'Dumbbell Curl',
+        sets: [{ sets: 3, weight: 25, reps: 12 }],
+      },
+      {
+        name: 'Skull Crushers',
+        sets: [{ sets: 3, weight: 50, reps: 10 }],
+      },
+      {
+        name: 'Lunges',
+        sets: [{ sets: 3, weight: 35, reps: 10 }],
+      },
+      {
+        name: 'Hip Thrust',
+        sets: [{ sets: 3, weight: 185, reps: 10 }],
+      },
+      {
+        name: 'Ab Wheel Rollout',
+        sets: [{ sets: 3, reps: 10 }],
+      },
+    ],
   },
 ];
 
@@ -113,41 +367,61 @@ export async function seedIfNeeded() {
       return;
     }
 
+    console.log('[seed] Starting database seed...');
+
     // Seed exercises first
     for (const ex of EXERCISE_LIBRARY) {
-      await createExercise(ex);
+      await createExercise({
+        ...ex,
+        isCustom: false,
+      });
     }
+    console.log(`[seed] Seeded ${EXERCISE_LIBRARY.length} exercises`);
+
+    // Fetch created exercises to get their IDs
+    const allExercises = await fetchExercises();
+    const exerciseMap = new Map(allExercises.map(e => [e.name, e]));
 
     // Seed templates
-    for (const tmpl of DEFAULT_TEMPLATES) {
-      await createTemplate(tmpl);
+    for (const templateData of DEFAULT_TEMPLATES) {
+      const templateExercises = [];
+
+      for (let exIdx = 0; exIdx < templateData.exercises.length; exIdx++) {
+        const exData = templateData.exercises[exIdx];
+        const exercise = exerciseMap.get(exData.name);
+
+        if (!exercise) {
+          console.warn(`[seed] Exercise not found: ${exData.name}`);
+          continue;
+        }
+
+        const setGroups = exData.sets.map((sg, sgIdx) => ({
+          id: crypto.randomUUID(),
+          order: sgIdx,
+          sets: sg.sets,
+          reps: sg.reps ?? null,
+          weight: sg.weight ?? null,
+          duration: sg.duration ?? null,
+        }));
+
+        templateExercises.push({
+          id: crypto.randomUUID(),
+          order: exIdx,
+          exerciseId: exercise.id,
+          exerciseName: exercise.name,
+          setGroups,
+        });
+      }
+
+      await createTemplate({
+        name: templateData.name,
+        templateExercises,
+        order: templateData.order,
+        isCustom: false,
+      });
     }
+    console.log(`[seed] Seeded ${DEFAULT_TEMPLATES.length} templates`);
   } catch (error) {
     console.error('[seed] Error seeding database:', error);
   }
-}
-
-/**
- * Create a template in the templates object store
- * @param {{name: string, order: number, exerciseNames: Array<string>}} template
- * @returns {Promise<{id: string, name: string, order: number, exerciseNames: Array<string>}>}
- */
-async function createTemplate({ name, order, exerciseNames }) {
-  const db = await openDb();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction('templates', 'readwrite');
-    const store = tx.objectStore('templates');
-    const template = {
-      id: crypto.randomUUID(),
-      name,
-      order,
-      exerciseNames,
-    };
-
-    const req = store.add(template);
-    req.onerror = () => reject(req.error);
-
-    tx.oncomplete = () => resolve(template);
-    tx.onerror = () => reject(tx.error);
-  });
 }

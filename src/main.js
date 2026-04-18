@@ -24,9 +24,18 @@ async function renderRoute(route) {
     } else if (path === '/history') {
       const { renderHistory } = await import('./features/history/history.js');
       await renderHistory(appEl);
+    } else if (path === '/history/:id') {
+      const { renderWorkoutDetail } = await import('./features/workout-detail/workout-detail.js');
+      await renderWorkoutDetail(appEl, { id: route.params.id });
+    } else if (path === '/workout/:id/summary') {
+      const { renderWorkoutSummary } = await import('./features/workout-summary/workout-summary.js');
+      await renderWorkoutSummary(appEl, { id: route.params.id });
     } else if (path === '/workout/:id') {
       const { renderActiveWorkout } = await import('./features/active-workout/active-workout.js');
       await renderActiveWorkout(appEl, { id: route.params.id });
+    } else if (path === '/template-editor/:id') {
+      const { renderTemplateEditor } = await import('./features/template-editor/template-editor.js');
+      await renderTemplateEditor(appEl, { id: route.params.id });
     } else if (path === '/stats') {
       const { renderStats } = await import('./features/stats/stats.js');
       await renderStats(appEl);
@@ -52,7 +61,8 @@ function updateTabBar(route) {
     const tabRoute = tab.dataset.route;
     let isActive = false;
     if (tabRoute === '/') {
-      isActive = (path === '/' || path === '' || path === '/workout/:id');
+      isActive = (path === '/' || path === '' || path === '/workout/:id' ||
+                  path === '/workout/:id/summary' || path === '/template-editor/:id');
     } else {
       isActive = path === tabRoute || path.startsWith(tabRoute + '/');
     }

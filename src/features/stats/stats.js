@@ -1,6 +1,6 @@
 /**
- * Phase 1A — Stats Feature
- * Renders the Stats tab with streak counter, weekly volume, and weight progression
+ * Phase 1D — Stats Feature (V2)
+ * Renders the Stats tab with THIS YEAR totals, FREQUENCY averages, TOP EXERCISES, and PERSONAL RECORDS
  */
 
 import { fetchAllWorkouts } from '../../core/store.js';
@@ -12,7 +12,7 @@ import { fetchAllWorkouts } from '../../core/store.js';
  */
 export async function renderStats(appEl) {
   const workouts = await fetchAllWorkouts();
-  const completed = workouts.filter(w => w.completedAt);
+  const completed = workouts.filter(w => w.completedAt !== null);
 
   appEl.innerHTML = '';
   const container = document.createElement('div');
@@ -28,243 +28,316 @@ export async function renderStats(appEl) {
     const empty = document.createElement('div');
     empty.className = 'stats__empty';
     empty.innerHTML = `
-      <p class="stats__empty-title">NO DATA YET</p>
-      <p class="stats__empty-caption">Complete your first workout to see stats.</p>
+      <p class="stats__empty-title">NO STATS YET</p>
+      <p class="stats__empty-caption">COMPLETE YOUR FIRST WORKOUT TO SEE YOUR STATS</p>
     `;
     container.appendChild(empty);
     appEl.appendChild(container);
     return;
   }
 
-  // Section 1: Streak
-  container.appendChild(buildStreakSection(completed));
+  // Section 1: THIS YEAR
+  container.appendChild(buildThisYearSection(completed));
 
-  // Section 2: Weekly Volume
-  container.appendChild(buildVolumeSection(completed));
+  // Section 2: FREQUENCY
+  container.appendChild(buildFrequencySection(completed));
 
-  // Section 3: Weight Progression
-  container.appendChild(buildProgressionSection(completed));
+  // Section 3: TOP EXERCISES
+  container.appendChild(buildTopExercisesSection(completed));
+
+  // Section 4: PERSONAL RECORDS
+  container.appendChild(buildPersonalRecordsSection(completed));
 
   appEl.appendChild(container);
 }
 
 /**
- * Build the Streak section
+ * Build the THIS YEAR section
+ * Shows workout count and total duration for the current calendar year
  * @param {Array} completed - Array of completed workouts
  * @returns {HTMLElement}
  */
-function buildStreakSection(completed) {
-  // Get unique workout days (YYYY-MM-DD strings), sorted ascending
-  const days = [...new Set(
-    completed.map(w => w.completedAt.slice(0, 10))
-  )].sort();
+function buildThisYearSection(completed) {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const yearStart = new Date(currentYear, 0, 1);
+  const yearEnd = new Date(currentYear + 1, 0, 1);
 
-  // Current streak: count consecutive days backwards from today
-  let currentStreak = 0;
-  const today = new Date().toISOString().slice(0, 10);
-  let checkDate = today;
-  for (let i = days.length - 1; i >= 0; i--) {
-    if (days[i] === checkDate) {
-      currentStreak++;
-      // move checkDate back one day
-      const d = new Date(checkDate);
-      d.setDate(d.getDate() - 1);
-      checkDate = d.toISOString().slice(0, 10);
-    } else if (days[i] < checkDate) {
-      break; // gap found
-    }
-  }
+  // Filter workouts to current calendar year
+  const yearWorkouts = completed.filter(w => {
+    const completedDate = new Date(w.completedAt);
+    return completedDate >= yearStart && completedDate < yearEnd;
+  });
 
-  // Best streak: longest consecutive run
-  let bestStreak = 1, runStreak = 1;
-  for (let i = 1; i < days.length; i++) {
-    const prev = new Date(days[i - 1]);
-    const curr = new Date(days[i]);
-    const diff = (curr - prev) / (1000 * 60 * 60 * 24);
-    if (diff === 1) {
-      runStreak++;
-      bestStreak = Math.max(bestStreak, runStreak);
-    } else {
-      runStreak = 1;
-    }
-  }
+  // Count workouts
+  const workoutCount = yearWorkouts.length;
+
+  // Calculate total duration (in seconds)
+  let totalSeconds = 0;
+  yearWorkouts.forEach(w => {
+    const started = new Date(w.startedAt);
+    const finished = new Date(w.completedAt);
+    const pausedMs = (w.totalPausedDuration || 0) * 1000;
+    const durationMs = (finished - started) - pausedMs;
+    const durationSeconds = Math.max(0, durationMs / 1000);
+    totalSeconds += durationSeconds;
+  });
+
+  // Format as Xh Ym
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const durationStr = `${hours}h ${minutes}m`;
 
   const section = document.createElement('div');
   section.className = 'stats__section';
-  section.innerHTML = `
-    <h2 class="stats__section-title">STREAK</h2>
-    <div class="stats__streak-row">
-      <div class="stats__streak-block">
-        <div class="stats__streak-value">${currentStreak}</div>
-        <div class="stats__streak-label">CURRENT</div>
-      </div>
-      <div class="stats__streak-block">
-        <div class="stats__streak-value">${bestStreak}</div>
-        <div class="stats__streak-label">BEST</div>
-      </div>
-      <div class="stats__streak-block">
-        <div class="stats__streak-value">${completed.length}</div>
-        <div class="stats__streak-label">TOTAL</div>
-      </div>
-    </div>
+
+  const title = document.createElement('h2');
+  title.className = 'stats__section-title';
+  title.textContent = 'THIS YEAR';
+  section.appendChild(title);
+
+  const grid = document.createElement('div');
+  grid.className = 'stats__grid-2col';
+
+  // Workouts card
+  const workoutsCard = document.createElement('div');
+  workoutsCard.className = 'stats__card';
+  workoutsCard.innerHTML = `
+    <div class="stats__card-value">${workoutCount}</div>
+    <div class="stats__card-label">WORKOUTS</div>
   `;
+  grid.appendChild(workoutsCard);
+
+  // Total time card
+  const timeCard = document.createElement('div');
+  timeCard.className = 'stats__card';
+  timeCard.innerHTML = `
+    <div class="stats__card-value">${durationStr}</div>
+    <div class="stats__card-label">TOTAL TIME</div>
+  `;
+  grid.appendChild(timeCard);
+
+  section.appendChild(grid);
   return section;
 }
 
 /**
- * Build the Weekly Volume section
- * Volume = sum of (weight × reps) for all completed strength sets in the workout
+ * Build the FREQUENCY section
+ * Shows per-week and per-month averages
  * @param {Array} completed - Array of completed workouts
  * @returns {HTMLElement}
  */
-function buildVolumeSection(completed) {
-  // Group by ISO week (YYYY-WW)
-  function getWeekKey(isoDate) {
-    const d = new Date(isoDate);
-    const jan1 = new Date(d.getFullYear(), 0, 1);
-    const week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
-    return `${d.getFullYear()}-W${String(week).padStart(2, '0')}`;
+function buildFrequencySection(completed) {
+  if (completed.length === 0) {
+    const section = document.createElement('div');
+    section.className = 'stats__section';
+    const title = document.createElement('h2');
+    title.className = 'stats__section-title';
+    title.textContent = 'FREQUENCY';
+    section.appendChild(title);
+    return section;
   }
 
-  const volumeByWeek = {};
+  // Find earliest and latest workout dates
+  const startedAtDates = completed.map(w => new Date(w.startedAt)).sort((a, b) => a - b);
+  const firstWorkout = startedAtDates[0];
+  const lastWorkout = startedAtDates[startedAtDates.length - 1];
+  const today = new Date();
+
+  // Calculate weeks since first workout
+  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+  const msSinceFirst = today - firstWorkout;
+  const weeksSinceFirst = msSinceFirst / msPerWeek;
+  const perWeek = completed.length / weeksSinceFirst;
+  const perWeekStr = perWeek.toFixed(1);
+
+  // Calculate months since first workout
+  let monthsSinceFirst = 0;
+  let tempDate = new Date(firstWorkout);
+  while (tempDate < today) {
+    tempDate.setMonth(tempDate.getMonth() + 1);
+    monthsSinceFirst++;
+  }
+  // Adjust if we went one month too far
+  if (tempDate > today) {
+    monthsSinceFirst--;
+  }
+  // Ensure at least 1 month
+  monthsSinceFirst = Math.max(1, monthsSinceFirst);
+  const perMonth = completed.length / monthsSinceFirst;
+  const perMonthStr = perMonth.toFixed(1);
+
+  const section = document.createElement('div');
+  section.className = 'stats__section';
+
+  const title = document.createElement('h2');
+  title.className = 'stats__section-title';
+  title.textContent = 'FREQUENCY';
+  section.appendChild(title);
+
+  const grid = document.createElement('div');
+  grid.className = 'stats__grid-2col';
+
+  // Per week card
+  const perWeekCard = document.createElement('div');
+  perWeekCard.className = 'stats__card';
+  perWeekCard.innerHTML = `
+    <div class="stats__card-value">${perWeekStr}</div>
+    <div class="stats__card-label">PER WEEK</div>
+  `;
+  grid.appendChild(perWeekCard);
+
+  // Per month card
+  const perMonthCard = document.createElement('div');
+  perMonthCard.className = 'stats__card';
+  perMonthCard.innerHTML = `
+    <div class="stats__card-value">${perMonthStr}</div>
+    <div class="stats__card-label">PER MONTH</div>
+  `;
+  grid.appendChild(perMonthCard);
+
+  section.appendChild(grid);
+  return section;
+}
+
+/**
+ * Build the TOP EXERCISES section
+ * Shows the 10 most-performed exercises ranked by workout count
+ * @param {Array} completed - Array of completed workouts
+ * @returns {HTMLElement}
+ */
+function buildTopExercisesSection(completed) {
+  // Count distinct workouts per exercise name
+  const exerciseWorkoutCount = new Map();
   completed.forEach(w => {
-    const key = getWeekKey(w.completedAt);
-    let vol = 0;
+    const exerciseNames = new Set();
     w.exercises.forEach(we => {
-      we.sets.forEach(s => {
-        if (s.isCompleted && s.weight && s.reps) {
-          vol += s.weight * s.reps;
+      exerciseNames.add(we.exerciseName);
+    });
+    exerciseNames.forEach(name => {
+      exerciseWorkoutCount.set(name, (exerciseWorkoutCount.get(name) || 0) + 1);
+    });
+  });
+
+  // Sort by count descending and take top 10
+  const sorted = Array.from(exerciseWorkoutCount.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+
+  const section = document.createElement('div');
+  section.className = 'stats__section';
+
+  const title = document.createElement('h2');
+  title.className = 'stats__section-title';
+  title.textContent = 'TOP EXERCISES';
+  section.appendChild(title);
+
+  if (sorted.length === 0) {
+    const noData = document.createElement('div');
+    noData.className = 'stats__no-data';
+    noData.textContent = 'NO EXERCISE DATA';
+    section.appendChild(noData);
+    return section;
+  }
+
+  const list = document.createElement('div');
+  list.className = 'stats__exercise-list';
+
+  sorted.forEach(([exerciseName, count]) => {
+    const row = document.createElement('div');
+    row.className = 'stats__exercise-row';
+    row.innerHTML = `
+      <div class="stats__exercise-name">${exerciseName.toUpperCase()}</div>
+      <div class="stats__exercise-count">${count}×</div>
+    `;
+    list.appendChild(row);
+  });
+
+  section.appendChild(list);
+  return section;
+}
+
+/**
+ * Build the PERSONAL RECORDS section
+ * Shows max weight/reps/duration per exercise, sorted alphabetically
+ * @param {Array} completed - Array of completed workouts
+ * @returns {HTMLElement}
+ */
+function buildPersonalRecordsSection(completed) {
+  // Build map: exerciseName -> { measureBy, maxWeight, maxReps, maxDuration }
+  const exercisePRs = new Map();
+
+  completed.forEach(w => {
+    w.exercises.forEach(we => {
+      const exerciseName = we.exerciseName;
+      const measureBy = we.measureBy || 'weight'; // Fallback to weight if missing
+
+      if (!exercisePRs.has(exerciseName)) {
+        exercisePRs.set(exerciseName, { measureBy, maxWeight: 0, maxReps: 0, maxDuration: 0 });
+      }
+
+      const pr = exercisePRs.get(exerciseName);
+
+      we.sets.forEach(set => {
+        // Use all sets (not just completed) to be permissive per spec
+        if (set.weight !== null && set.weight !== undefined) {
+          pr.maxWeight = Math.max(pr.maxWeight, set.weight);
+        }
+        if (set.reps !== null && set.reps !== undefined) {
+          pr.maxReps = Math.max(pr.maxReps, set.reps);
+        }
+        if (set.duration !== null && set.duration !== undefined) {
+          pr.maxDuration = Math.max(pr.maxDuration, set.duration);
         }
       });
     });
-    volumeByWeek[key] = (volumeByWeek[key] || 0) + vol;
   });
 
-  // Last 8 weeks
-  const weeks = Object.entries(volumeByWeek)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .slice(-8);
-
-  const maxVol = Math.max(...weeks.map(([, v]) => v), 1);
+  // Sort alphabetically by exercise name
+  const sorted = Array.from(exercisePRs.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]));
 
   const section = document.createElement('div');
   section.className = 'stats__section';
 
   const title = document.createElement('h2');
   title.className = 'stats__section-title';
-  title.textContent = 'WEEKLY VOLUME';
+  title.textContent = 'PERSONAL RECORDS';
   section.appendChild(title);
 
-  if (weeks.length === 0) {
-    section.innerHTML += '<div class="stats__no-data">NO STRENGTH DATA YET</div>';
+  if (sorted.length === 0) {
+    const noData = document.createElement('div');
+    noData.className = 'stats__no-data';
+    noData.textContent = 'NO RECORDS YET';
+    section.appendChild(noData);
     return section;
   }
 
-  // Bar chart
-  const chart = document.createElement('div');
-  chart.className = 'stats__bar-chart';
+  const list = document.createElement('div');
+  list.className = 'stats__pr-list';
 
-  weeks.forEach(([weekKey, vol]) => {
-    const col = document.createElement('div');
-    col.className = 'stats__bar-col';
-    const pct = (vol / maxVol) * 100;
-    col.innerHTML = `
-      <div class="stats__bar" style="height: ${pct}%"></div>
-      <div class="stats__bar-label">${weekKey.split('-W')[1]}</div>
-    `;
-    chart.appendChild(col);
-  });
-  section.appendChild(chart);
+  sorted.forEach(([exerciseName, pr]) => {
+    const row = document.createElement('div');
+    row.className = 'stats__pr-row';
 
-  return section;
-}
-
-/**
- * Build the Weight Progression section
- * @param {Array} completed - Array of completed workouts
- * @returns {HTMLElement}
- */
-function buildProgressionSection(completed) {
-  // Build map: exerciseName → [{ date, maxWeight }] per workout
-  const exerciseData = {};
-  completed.forEach(w => {
-    w.exercises.forEach(we => {
-      if (we.exerciseType !== 'strength') return;
-      const maxW = Math.max(...we.sets.filter(s => s.weight).map(s => s.weight), 0);
-      if (maxW === 0) return;
-      if (!exerciseData[we.exerciseName]) exerciseData[we.exerciseName] = [];
-      exerciseData[we.exerciseName].push({
-        date: w.completedAt.slice(0, 10),
-        maxWeight: maxW,
-      });
-    });
-  });
-
-  // Top 5 most-used exercises
-  const top5 = Object.entries(exerciseData)
-    .sort(([, a], [, b]) => b.length - a.length)
-    .slice(0, 5);
-
-  const section = document.createElement('div');
-  section.className = 'stats__section';
-
-  const title = document.createElement('h2');
-  title.className = 'stats__section-title';
-  title.textContent = 'WEIGHT PROGRESSION';
-  section.appendChild(title);
-
-  if (top5.length === 0) {
-    section.innerHTML += '<div class="stats__no-data">LOG STRENGTH SETS TO SEE PROGRESSION</div>';
-    return section;
-  }
-
-  // Exercise selector chips
-  const chips = document.createElement('div');
-  chips.className = 'stats__chips';
-  let selectedExercise = top5[0][0];
-
-  const chartContainer = document.createElement('div');
-  chartContainer.className = 'stats__progression-chart';
-
-  function renderProgressionChart() {
-    chartContainer.innerHTML = '';
-    const data = exerciseData[selectedExercise] || [];
-    if (data.length < 2) {
-      chartContainer.innerHTML = '<div class="stats__no-data">NEED MORE DATA</div>';
-      return;
+    let valueStr = '';
+    if (pr.measureBy === 'weight' && pr.maxWeight > 0) {
+      valueStr = `${pr.maxWeight} lb`;
+    } else if (pr.measureBy === 'repsOnly' && pr.maxReps > 0) {
+      valueStr = `${pr.maxReps} reps`;
+    } else if (pr.measureBy === 'seconds' && pr.maxDuration > 0) {
+      const mins = Math.floor(pr.maxDuration / 60);
+      const secs = pr.maxDuration % 60;
+      valueStr = `${mins}:${String(secs).padStart(2, '0')}`;
     }
-    const maxW = Math.max(...data.map(d => d.maxWeight));
-    const chart = document.createElement('div');
-    chart.className = 'stats__bar-chart';
-    data.slice(-8).forEach(({ date, maxWeight }) => {
-      const pct = (maxWeight / maxW) * 100;
-      const col = document.createElement('div');
-      col.className = 'stats__bar-col';
-      col.innerHTML = `
-        <div class="stats__bar" style="height:${pct}%"></div>
-        <div class="stats__bar-label">${date.slice(5)}</div>
-      `;
-      chart.appendChild(col);
-    });
-    chartContainer.appendChild(chart);
-  }
 
-  top5.forEach(([name]) => {
-    const chip = document.createElement('button');
-    chip.className = `stats__chip${name === selectedExercise ? ' stats__chip--selected' : ''}`;
-    chip.textContent = name;
-    chip.addEventListener('click', () => {
-      selectedExercise = name;
-      chips.querySelectorAll('.stats__chip').forEach(c => c.classList.remove('stats__chip--selected'));
-      chip.classList.add('stats__chip--selected');
-      renderProgressionChart();
-    });
-    chips.appendChild(chip);
+    row.innerHTML = `
+      <div class="stats__pr-name">${exerciseName.toUpperCase()}</div>
+      <div class="stats__pr-value">${valueStr}</div>
+    `;
+    list.appendChild(row);
   });
 
-  section.appendChild(chips);
-  section.appendChild(chartContainer);
-  renderProgressionChart();
-
+  section.appendChild(list);
   return section;
 }

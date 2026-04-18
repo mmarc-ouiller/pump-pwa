@@ -1,0 +1,267 @@
+/**
+ * Phase 1C — Workout Detail + Edit Styles
+ * Full-page detail view for editing completed workouts
+ */
+
+.workout-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  padding-bottom: 80px; /* Space for tab bar */
+  background-color: var(--color-bg);
+}
+
+/* Header with back button and editable name */
+.workout-detail__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.workout-detail__back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-family: var(--font-mono);
+  color: var(--color-fg);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.workout-detail__back-btn:active {
+  opacity: 0.7;
+}
+
+.workout-detail__name-input {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius, 0);
+  font-size: var(--font-heading);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  outline: none;
+}
+
+.workout-detail__name-input:focus {
+  border-color: var(--color-fg);
+}
+
+/* Date/time section */
+.workout-detail__date-section {
+  padding: var(--space-lg);
+  border-bottom: var(--border-width) solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.workout-detail__date-label {
+  font-size: var(--font-caption);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.workout-detail__date-input {
+  padding: var(--space-sm) var(--space-md);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius, 0);
+  font-size: var(--font-body);
+  font-family: var(--font-mono);
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  outline: none;
+}
+
+.workout-detail__date-input:focus {
+  border-color: var(--color-fg);
+}
+
+.workout-detail__duration {
+  font-size: var(--font-caption);
+  font-family: var(--font-mono);
+  color: var(--color-muted);
+  margin-top: var(--space-sm);
+}
+
+/* Exercises section */
+.workout-detail__exercises-section {
+  padding: var(--space-lg);
+  flex: 1;
+}
+
+.workout-detail__exercise-card {
+  margin-bottom: var(--space-lg);
+}
+
+.workout-detail__exercise-name {
+  margin: 0 0 var(--space-md) 0;
+  font-size: var(--font-heading);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-fg);
+}
+
+.workout-detail__sets-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.workout-detail__empty-exercises {
+  margin: 0;
+  font-size: var(--font-caption);
+  font-family: var(--font-mono);
+  color: var(--color-muted);
+}
+
+/* Set rows (matching Phase 1B active-workout structure) */
+.workout-detail__set-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius, 0);
+  background-color: var(--color-bg);
+}
+
+.workout-detail__set-row--weight {
+  grid-template-columns: 2rem 1fr 1fr 2rem;
+}
+
+.workout-detail__set-row--reps-only {
+  grid-template-columns: 2rem 1fr 2rem;
+}
+
+.workout-detail__set-row--seconds {
+  grid-template-columns: 2rem 1fr 2rem;
+}
+
+.workout-detail__set-row--cardio {
+  grid-template-columns: 2rem 1fr 1fr 1fr 1fr 2rem;
+}
+
+.workout-detail__set-row--completed {
+  opacity: 0.6;
+}
+
+.workout-detail__set-index {
+  font-size: var(--font-caption);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-muted);
+  text-align: center;
+  min-width: 2rem;
+}
+
+.workout-detail__set-value {
+  font-size: var(--font-body);
+  font-family: var(--font-mono);
+  color: var(--color-fg);
+}
+
+.workout-detail__set-check {
+  font-size: var(--font-heading);
+  font-family: var(--font-mono);
+  color: var(--color-muted);
+  text-align: center;
+  min-width: 2rem;
+}
+
+.workout-detail__set-check--done {
+  color: var(--color-success, #2e6f40);
+  font-weight: 700;
+}
+
+/* Action buttons at bottom */
+.workout-detail__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border-top: var(--border-width) solid var(--color-border);
+  background-color: var(--color-bg);
+}
+
+.workout-detail__action-btn {
+  padding: var(--space-md);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius, 0);
+  font-size: var(--font-body);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  outline: none;
+}
+
+.workout-detail__action-btn:active {
+  opacity: 0.7;
+}
+
+.workout-detail__action-btn--primary {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  border-color: var(--color-fg);
+}
+
+.workout-detail__action-btn--primary:hover {
+  background-color: var(--color-fg);
+  color: var(--color-bg);
+}
+
+.workout-detail__action-btn--destructive {
+  background-color: var(--color-bg);
+  color: #cc0000;
+  border-color: #cc0000;
+}
+
+.workout-detail__action-btn--destructive:hover {
+  background-color: #cc0000;
+  color: var(--color-bg);
+}
+
+/* Touch target minimum height */
+.workout-detail__action-btn {
+  min-height: var(--touch-target);
+}
+
+/* Responsive: Reduce padding on small screens */
+@media (max-width: 320px) {
+  .workout-detail__header {
+    padding: var(--space-md) var(--space-sm);
+  }
+
+  .workout-detail__date-section {
+    padding: var(--space-md);
+  }
+
+  .workout-detail__exercises-section {
+    padding: var(--space-md);
+  }
+
+  .workout-detail__actions {
+    padding: var(--space-md);
+  }
+}

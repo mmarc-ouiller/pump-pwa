@@ -6,56 +6,68 @@
    ============================================================================ */
 
 .btn {
-  font-family: var(--font-mono);
-  font-size: var(--font-body);
-  text-transform: uppercase;
+  font-family: var(--font-base);
+  border-radius: var(--radius);
+  border: var(--border-width) solid var(--color-border);
+  min-height: var(--touch-target);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
   font-weight: 700;
   letter-spacing: 0.05em;
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius);
-  padding: var(--space-sm) var(--space-md);
-  min-height: var(--touch-target);
-  min-width: 44px;
-  cursor: pointer;
+  text-transform: uppercase;
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform var(--anim-duration), box-shadow var(--anim-duration);
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Solid variant: black background, white text, 2px black border */
-.btn--solid {
-  background: var(--color-fg);
-  color: var(--color-bg);
-  box-shadow: 4px 4px 0 var(--color-border);
-}
-
-/* Outline variant: white background, black text, 2px black border */
-.btn--outline {
-  background: var(--color-bg);
-  color: var(--color-fg);
-}
-
-/* Pressed/active state: translate down-right, reduce shadow */
-.btn--solid:active {
+.btn:active {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 var(--color-border);
-}
-
-.btn--outline:active {
-  transform: translate(2px, 2px);
-}
-
-/* Disabled state: reduced opacity, no interaction */
-.btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
   box-shadow: none;
 }
 
-.btn:disabled:active {
+.btn--primary {
+  background: var(--color-accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn--secondary {
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn--destructive {
+  background: var(--color-destructive);
+  color: white;
+  border-color: var(--color-destructive);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
   transform: none;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Legacy solid/outline variants (kept for compatibility) */
+.btn--solid {
+  background: var(--color-text);
+  color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn--outline {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ============================================================================
@@ -63,15 +75,27 @@
    ============================================================================ */
 
 .card {
-  background: var(--color-bg);
+  background: var(--color-surface);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius);
-  padding: var(--space-md);
+  padding: var(--space-3);
 }
 
-/* Shadow variant: 4px hard offset shadow effect */
+.card--shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.card--shadow-md {
+  box-shadow: var(--shadow-md);
+}
+
+.card--shadow-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Legacy shadow variant (kept for compatibility) */
 .card--shadow {
-  box-shadow: 4px 4px 0 var(--color-border);
+  box-shadow: var(--shadow-md);
 }
 
 /* ============================================================================
@@ -79,54 +103,46 @@
    ============================================================================ */
 
 .textfield {
-  font-family: var(--font-mono);
-  font-size: var(--font-body);
-  background: var(--color-bg);
-  color: var(--color-fg);
+  font-family: var(--font-base);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius);
-  padding: var(--space-xs) var(--space-sm);
-  min-height: var(--touch-target);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
   width: 100%;
-  outline: none;
   box-sizing: border-box;
-  transition: box-shadow var(--anim-duration);
+  transition: box-shadow 0.1s ease;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
 
-/* Focus state: 2px outline */
 .textfield:focus {
-  box-shadow: 0 0 0 2px var(--color-fg);
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent);
 }
 
-/* Placeholder text: uppercase, muted color */
+/* Placeholder text */
 .textfield::placeholder {
-  color: var(--color-muted);
-  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
 /* iOS Safari placeholder styling */
 .textfield::-webkit-input-placeholder {
-  color: var(--color-muted);
-  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
 .textfield::-moz-placeholder {
-  color: var(--color-muted);
-  text-transform: uppercase;
+  color: var(--color-text-muted);
   opacity: 1;
 }
 
 .textfield:-ms-input-placeholder {
-  color: var(--color-muted);
-  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
 .textfield::-ms-input-placeholder {
-  color: var(--color-muted);
-  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
 /* Disabled state */

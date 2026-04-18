@@ -1,10 +1,12 @@
 /**
- * Phase 1B.3 — History Feature
+ * Phase 1C — History Feature
  * Displays completed workouts grouped by date with summary stats
+ * Tappable cards open detail/edit view at /history/:id
  */
 
 import { fetchCompletedWorkouts, deleteWorkout } from '../../core/store.js';
 import { formatDuration } from '../../core/format.js';
+import { navigate } from '../../core/router.js';
 
 /**
  * Render the History view
@@ -48,14 +50,14 @@ function buildHistoryView(workouts) {
 
     const emptyCaption = document.createElement('p');
     emptyCaption.className = 'history__empty-caption';
-    emptyCaption.textContent = 'Completed workouts will appear here.';
+    emptyCaption.textContent = 'COMPLETE YOUR FIRST WORKOUT TO SEE YOUR HISTORY';
     empty.appendChild(emptyCaption);
 
     container.appendChild(empty);
     return container;
   }
 
-  // Group by date
+  // Group by date with smart labels
   const groups = groupByDate(workouts);
 
   groups.forEach(({ dateLabel, workouts: groupWorkouts }) => {
@@ -65,7 +67,7 @@ function buildHistoryView(workouts) {
     // Sticky date header
     const sectionHeader = document.createElement('div');
     sectionHeader.className = 'history__section-header';
-    sectionHeader.textContent = dateLabel; // e.g. "SATURDAY, APR 18"
+    sectionHeader.textContent = dateLabel;
     section.appendChild(sectionHeader);
 
     groupWorkouts.forEach(workout => {
@@ -79,18 +81,32 @@ function buildHistoryView(workouts) {
 }
 
 /**
- * Group workouts by date
+ * Group workouts by date with smart labels (Today/Yesterday/date)
  * @param {Workout[]} workouts
  * @returns {Array<{dateLabel: string, workouts: Workout[]}>}
  */
 function groupByDate(workouts) {
   const map = new Map();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
   workouts.forEach(w => {
-    const date = new Date(w.completedAt);
+    const date = new Date(w.completedAt || w.startedAt);
+    date.setHours(0, 0, 0, 0);
     const key = date.toISOString().slice(0, 10); // YYYY-MM-DD
-    const label = date.toLocaleDateString('en-US', {
-      weekday: 'long', month: 'short', day: 'numeric'
-    }).toUpperCase(); // "SATURDAY, APR 18"
+
+    let label;
+    if (date.getTime() === today.getTime()) {
+      label = 'TODAY';
+    } else if (date.getTime() === yesterday.getTime()) {
+      label = 'YESTERDAY';
+    } else {
+      label = date.toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      }).toUpperCase();
+    }
 
     if (!map.has(key)) {
       map.set(key, { dateLabel: label, workouts: [] });
@@ -116,7 +132,8 @@ function buildWorkoutCard(workout, container) {
 
   const startTime = new Date(workout.startedAt);
   const endTime = new Date(workout.completedAt);
-  const durationSecs = Math.floor((endTime - startTime) / 1000);
+  const pausedMs = (workout.totalPausedDuration || 0) * 1000;
+  const durationSecs = Math.floor((endTime - startTime) / 1000 - pausedMs / 1000);
 
   // Exercise names preview (first 3 + "N MORE")
   const names = workout.exercises.map(we => we.exerciseName);
@@ -127,6 +144,15 @@ function buildWorkoutCard(workout, container) {
 
   const cardContent = document.createElement('div');
   cardContent.className = 'history__workout';
+
+  // Make card tappable to open detail view
+  cardContent.addEventListener('click', (e) => {
+    // Don't navigate if the delete button was clicked
+    if (e.target === deleteBtn || e.target.closest('.history__delete-btn')) {
+      return;
+    }
+    navigate(`/history/${workout.id}`);
+  });
 
   // Workout header with name and delete button
   const workoutHeader = document.createElement('div');
@@ -140,54 +166,29 @@ function buildWorkoutCard(workout, container) {
   const deleteBtn = document.createElement('button');
   deleteBtn.className = 'history__delete-btn';
   deleteBtn.setAttribute('aria-label', `Delete ${workout.name}`);
-  deleteBtn.textContent = '×';
+  deleteBtn.textContent = '✕';
   workoutHeader.appendChild(deleteBtn);
 
   cardContent.appendChild(workoutHeader);
 
-  // Stats section
-  const statsContainer = document.createElement('div');
-  statsContainer.className = 'history__stats';
+  // Stats section (date/time + duration)
+  const dateTimeEl = document.createElement('div');
+  dateTimeEl.className = 'history__datetime';
+  const timeStr = startTime.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit', hour12: true
+  });
+  dateTimeEl.textContent = `${timeStr} · ${formatDuration(durationSecs)}`;
+  cardContent.appendChild(dateTimeEl);
 
-  const durationStat = document.createElement('span');
-  durationStat.className = 'history__stat';
-  const durationLabel = document.createElement('span');
-  durationLabel.className = 'history__stat-label';
-  durationLabel.textContent = 'DURATION';
-  durationStat.appendChild(durationLabel);
-  durationStat.appendChild(document.createTextNode(formatDuration(durationSecs)));
-  statsContainer.appendChild(durationStat);
-
-  const exercisesStat = document.createElement('span');
-  exercisesStat.className = 'history__stat';
-  const exercisesLabel = document.createElement('span');
-  exercisesLabel.className = 'history__stat-label';
-  exercisesLabel.textContent = 'EXERCISES';
-  exercisesStat.appendChild(exercisesLabel);
-  exercisesStat.appendChild(document.createTextNode(String(exerciseCount)));
-  statsContainer.appendChild(exercisesStat);
-
-  const setsStat = document.createElement('span');
-  setsStat.className = 'history__stat';
-  const setsLabel = document.createElement('span');
-  setsLabel.className = 'history__stat-label';
-  setsLabel.textContent = 'SETS';
-  setsStat.appendChild(setsLabel);
-  setsStat.appendChild(document.createTextNode(`${completedSets}/${totalSets}`));
-  statsContainer.appendChild(setsStat);
-
-  cardContent.appendChild(statsContainer);
-
-  // Exercise preview
-  if (exercisePreview) {
-    const previewEl = document.createElement('div');
-    previewEl.className = 'history__exercises-preview';
-    previewEl.textContent = exercisePreview;
-    cardContent.appendChild(previewEl);
-  }
+  // Exercise count + completed sets
+  const summaryEl = document.createElement('div');
+  summaryEl.className = 'history__summary';
+  summaryEl.textContent = `${exerciseCount} EXERCISE${exerciseCount !== 1 ? 'S' : ''} · ${completedSets}/${totalSets} SETS`;
+  cardContent.appendChild(summaryEl);
 
   // Wire delete button
-  deleteBtn.addEventListener('click', async () => {
+  deleteBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
     if (window.confirm(`Delete "${workout.name}"? This cannot be undone.`)) {
       try {
         await deleteWorkout(workout);

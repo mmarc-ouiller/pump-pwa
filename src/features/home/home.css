@@ -1,7 +1,9 @@
 /**
- * Phase 1B.1 — Home Feature CSS
- * Brutalist design for the Home screen
+ * Phase 1A — Home Screen CSS
+ * Brutalist design for the PUMP home screen
  */
+
+@import './card-stack.css';
 
 .home {
   padding: var(--space-lg);
@@ -12,7 +14,7 @@
 }
 
 /* ============================================================================
- * Header
+ * Header Section
  * ============================================================================ */
 
 .home__header {
@@ -47,7 +49,15 @@
 
 .home__active-card {
   width: 100%;
-  margin-bottom: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.home__active-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .home__active-label {
@@ -55,90 +65,113 @@
   font-size: var(--font-caption);
   text-transform: uppercase;
   color: var(--color-muted);
-  margin-bottom: var(--space-sm);
+}
+
+.home__badge {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius);
+  border: var(--border-width) solid var(--color-border);
+}
+
+.home__badge--paused {
+  background: #fca5a5;
+  color: #7f1d1d;
+  border-color: #7f1d1d;
+}
+
+.home__badge--planning {
+  background: #f3f4f6;
+  color: var(--color-muted);
+  border-color: var(--color-muted);
 }
 
 .home__active-name {
   font-family: var(--font-mono);
   font-size: var(--font-heading);
-  text-transform: uppercase;
   font-weight: 700;
+  text-transform: uppercase;
   color: var(--color-fg);
-  margin-bottom: var(--space-md);
 }
 
-.home__duration {
+.home__active-timer-label {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-top: var(--space-xs);
+}
+
+.home__active-elapsed {
   font-family: var(--font-mono);
   font-size: var(--font-data);
   font-weight: 700;
   color: var(--color-fg);
-  margin-bottom: var(--space-md);
+}
+
+.home__active-continue-btn {
+  width: 100%;
+  margin-top: var(--space-sm);
 }
 
 /* ============================================================================
- * Quick Start Button
+ * Tip Card
  * ============================================================================ */
 
-.home__quick-start {
-  width: 100%;
-  margin-bottom: var(--space-lg);
+.home__tip-card {
+  background: #f9fafb;
+  border: var(--border-width) solid #e5e7eb;
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.home__tip-text {
+  font-family: var(--font-mono);
+  font-size: var(--font-body);
+  line-height: 1.5;
+  color: var(--color-fg);
 }
 
 /* ============================================================================
  * Templates Section
  * ============================================================================ */
 
-.home__templates {
-  margin-top: var(--space-lg);
+.home__templates-section {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+  margin-top: var(--space-lg);
 }
 
-.home__section-title {
+.home__section-heading {
   font-family: var(--font-mono);
   font-size: var(--font-caption);
   text-transform: uppercase;
   color: var(--color-muted);
   margin: 0;
-  margin-bottom: var(--space-md);
-}
-
-/* ============================================================================
- * Template Card
- * ============================================================================ */
-
-.home__template-card {
-  width: 100%;
-}
-
-.home__template-name {
-  font-family: var(--font-mono);
-  font-size: var(--font-heading);
-  text-transform: uppercase;
-  font-weight: 700;
-  color: var(--color-fg);
   margin-bottom: var(--space-sm);
 }
 
-.home__template-count {
-  font-family: var(--font-mono);
-  font-size: var(--font-caption);
-  text-transform: uppercase;
-  color: var(--color-muted);
-  margin-bottom: var(--space-md);
-}
-
-.home__template-btns {
-  display: flex;
-  gap: var(--space-sm);
-}
-
-.home__template-edit-btn {
-  margin-left: var(--space-sm);
+.home__card-stack-wrapper {
+  /* Container for card-stack—handled by card-stack.css */
 }
 
 .home__new-template-btn {
   width: 100%;
   margin-top: var(--space-md);
+}
+
+/* ============================================================================
+ * Quick Start Button
+ * ============================================================================ */
+
+.home__quick-start-btn {
+  width: 100%;
+  margin-top: var(--space-lg);
 }

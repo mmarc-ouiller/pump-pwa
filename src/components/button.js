@@ -1,10 +1,10 @@
 /**
- * Render a brutalist button component
+ * Render a button component
  *
- * @param {{ title: string, variant?: 'solid'|'outline', onClick?: Function, disabled?: boolean }} options
+ * @param {{ title: string, variant?: 'solid'|'outline'|'primary'|'secondary'|'destructive'|'ghost', onClick?: Function, disabled?: boolean }} options
  * @returns {HTMLButtonElement}
  */
-export function renderButton({ title, variant = 'solid', onClick, disabled = false }) {
+export function renderButton({ title, variant = 'primary', onClick, disabled = false }) {
   const btn = document.createElement('button');
   btn.textContent = title;
   btn.className = `btn btn--${variant}`;

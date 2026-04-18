@@ -1,15 +1,35 @@
 /* Pump Design Tokens */
-/* Brutalist UI: white/black only, monospace typography, sharp corners, 2px borders */
 
 :root {
   /* Colors */
-  --color-bg: #ffffff;
-  --color-fg: #000000;
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-muted-bg: #f1f5f9;
+  --color-accent: #91da73;
+  --color-success: #2e6f40;
+  --color-destructive: #dc2626;
+  --color-text: #000000;
+  --color-text-muted: #64748b;
   --color-border: #000000;
-  --color-muted: #666666;
 
-  /* Typography: all monospace */
-  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  /* Radius */
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-lg: 16px;
+
+  /* Shadows (hard offset, no blur) */
+  --shadow-sm: 2px 2px 0 0 #000000;
+  --shadow-md: 4px 4px 0 0 #000000;
+  --shadow-lg: 8px 8px 0 0 #000000;
+
+  /* Borders */
+  --border-width: 2px;
+  --border-width-md: 3px;
+  --border-width-lg: 4px;
+
+  /* Typography */
+  --font-base: ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
 
   /* Font sizes */
   --font-display: 2rem;
@@ -19,7 +39,15 @@
   --font-caption: 0.75rem;
   --font-data: 1.125rem;
 
-  /* Spacing: 8pt grid */
+  /* Spacing (8pt grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+
+  /* Legacy spacing names (kept for compatibility) */
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
@@ -27,16 +55,25 @@
   --space-xl: 32px;
   --space-xxl: 48px;
 
-  /* Borders */
-  --border-width: 2px;
-  --border-width-thick: 4px;
-
-  /* Corners */
-  --radius: 0;
-
   /* Layout */
   --touch-target: 44px;
+  --home-max-width: 448px;
+  --tab-bar-height: 56px;
+  --bottom-padding: 96px;
 
   /* Animation */
   --anim-duration: 150ms;
+}
+
+/* Monochrome theme override (opt-in) */
+.theme--mono {
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-accent: #000000;
+  --color-success: #000000;
+  --radius: 0;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --font-base: ui-monospace, "SF Mono", monospace;
 }

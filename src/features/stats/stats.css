@@ -1,4 +1,4 @@
-/* Phase 1A — Stats Feature Styles */
+/* Phase 1D — Stats Feature Styles (V2) */
 
 .stats {
   padding: 0 0 var(--space-xl);
@@ -53,28 +53,31 @@
   letter-spacing: 0.1em;
 }
 
-/* Streak blocks */
-.stats__streak-row {
-  display: flex;
+/* Grid layout for stat cards (2 columns) */
+.stats__grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--space-md);
 }
 
-.stats__streak-block {
-  flex: 1;
+/* Stat card */
+.stats__card {
   border: var(--border-width) solid var(--color-border);
   padding: var(--space-md);
   text-align: center;
+  background: var(--color-surface, #ffffff);
+  border-radius: var(--radius, 0);
 }
 
-.stats__streak-value {
+.stats__card-value {
   font-family: var(--font-mono);
-  font-size: var(--font-display);
+  font-size: var(--font-data);
   font-weight: 700;
   line-height: 1;
   margin: 0 0 var(--space-xs) 0;
 }
 
-.stats__streak-label {
+.stats__card-label {
   font-family: var(--font-mono);
   font-size: var(--font-caption);
   color: var(--color-muted);
@@ -82,85 +85,73 @@
   margin: 0;
 }
 
-/* Bar chart */
-.stats__bar-chart {
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  height: 100px;
-  border-bottom: var(--border-width) solid var(--color-border);
-  border-left: var(--border-width) solid var(--color-border);
-  padding: var(--space-xs) 0 0;
-  margin-top: var(--space-sm);
-}
-
-.stats__bar-col {
-  flex: 1;
+/* Exercise list (TOP EXERCISES section) */
+.stats__exercise-list {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  height: 100%;
-  gap: 2px;
+  gap: var(--space-sm);
 }
 
-.stats__bar {
-  width: 100%;
-  background: var(--color-fg);
-  min-height: 2px;
-  transition: height 0.2s ease;
-}
-
-.stats__bar-label {
-  font-family: var(--font-mono);
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  color: var(--color-muted);
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  margin: 0;
-}
-
-/* Exercise chips */
-.stats__chips {
+.stats__exercise-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-md);
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0;
+  border-bottom: var(--border-width) solid var(--color-border);
 }
 
-.stats__chip {
+.stats__exercise-row:last-child {
+  border-bottom: none;
+}
+
+.stats__exercise-name {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  text-transform: uppercase;
+  font-size: var(--font-caption);
   font-weight: 700;
-  border: var(--border-width) solid var(--color-border);
-  background: var(--color-bg);
-  color: var(--color-fg);
-  padding: var(--space-xs) var(--space-sm);
-  cursor: pointer;
-  border-radius: var(--radius);
-  white-space: nowrap;
-  min-height: 32px;
-  margin: 0;
+  text-transform: uppercase;
 }
 
-.stats__chip:hover {
-  background: #f5f5f5;
+.stats__exercise-count {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  font-weight: 700;
+  text-align: right;
 }
 
-.stats__chip--selected {
-  background: var(--color-fg);
-  color: var(--color-bg);
+/* Personal Records list */
+.stats__pr-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
 
-.stats__progression-chart {
-  min-height: 120px;
+.stats__pr-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0;
+  border-bottom: var(--border-width) solid var(--color-border);
 }
 
+.stats__pr-row:last-child {
+  border-bottom: none;
+}
+
+.stats__pr-name {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.stats__pr-value {
+  font-family: var(--font-mono);
+  font-size: var(--font-caption);
+  font-weight: 700;
+  text-align: right;
+}
+
+/* No data message */
 .stats__no-data {
   font-family: var(--font-mono);
   font-size: var(--font-caption);

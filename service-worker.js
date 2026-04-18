@@ -1,7 +1,7 @@
 // Minimal service worker: precache the shell, serve cache-first, update on new deploys.
 // Bump CACHE_VERSION to force clients to fetch the new shell.
 
-const CACHE_VERSION = 'pump-v3';
+const CACHE_VERSION = 'pump-v4';
 const CACHE_NAME = CACHE_VERSION;
 
 const ASSETS_TO_CACHE = [
@@ -24,12 +24,19 @@ const ASSETS_TO_CACHE = [
   './src/components/button.js',
   './src/components/card.js',
   './src/components/textfield.js',
+  './src/components/countdown.js',
+  './src/components/countdown.css',
   './src/features/home/home.js',
   './src/features/home/home.css',
+  './src/features/home/card-stack.js',
+  './src/features/home/card-stack.css',
+  './src/features/home/daily-tips.js',
   './src/features/active-workout/active-workout.js',
   './src/features/active-workout/active-workout.css',
   './src/features/history/history.js',
   './src/features/history/history.css',
+  './src/features/workout-detail/workout-detail.js',
+  './src/features/workout-detail/workout-detail.css',
   './src/features/exercise-picker/exercise-picker.js',
   './src/features/exercise-picker/exercise-picker.css',
   './src/features/stats/stats.js',
@@ -38,6 +45,10 @@ const ASSETS_TO_CACHE = [
   './src/features/exercises/exercises.css',
   './src/features/template-editor/template-editor.js',
   './src/features/template-editor/template-editor.css',
+  './src/features/template-details/template-details.js',
+  './src/features/template-details/template-details.css',
+  './src/features/workout-summary/workout-summary.js',
+  './src/features/workout-summary/workout-summary.css',
 ];
 
 self.addEventListener("install", (event) => {
